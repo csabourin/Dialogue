@@ -1,0 +1,35 @@
+﻿{
+	"audioSrc": "./Audio/DDN237_3.4.1_POV_Activity.mp3",
+	"segments": [
+		{
+			"start": 0,
+			"end": 7.5,
+			"image": "images/Claudine_1.png"
+		},
+		{
+			"start": 7.5,
+			"end": 24,
+			"image": "images/Morgan_sad.png"
+		},
+		{
+			"start": 24,
+			"end": 32,
+			"image": "images/Claudine_2.png"
+		},
+		{
+			"start": 32,
+			"end": 46,
+			"image": "images/Morgan_sad.png"
+		},
+		{
+			"start": 46,
+			"end": 60,
+			"image": "images/Claudine_2.png"
+		},
+		{
+			"start": 60,
+			"end": 78,
+			"image": "images/Morgan_neutral.png"
+		}
+	]
+}

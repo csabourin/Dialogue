@@ -1,14 +1,15 @@
 <template>
 	<div style="font-family: sans-serif">
-		<h1>Audio Player</h1>
 		<div style="width: 100%; display: flex; justify-content: center">
-			<div
+			<div class="speech-bubble"
 				ref="imageContainer"
 				style="
-					height: 512px;
-					width: 512px;
-					overflow: hidden;
 					position: relative;
+					width: 500px;
+					height: 300px;
+					overflow: hidden;
+					border-radius: 10px;
+					box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
 				"
 			>
 				<img
@@ -19,22 +20,22 @@
 				/>
 			</div>
 		</div>
-		<div class="audioPlayer">
+		<div v-if="audioSrc" class="audioPlayer">
 			<audio ref="audio" @timeupdate="updateImage" @ended="reset">
 				<source :src="audioSrc" type="audio/mpeg" />
 			</audio>
 			<div class="control-buttons">
 				<button @click="rewind" title="Rewind 5s" class="control-button rewind">
-					&#11244;
+					&#10226;
 				</button>
 				<button
 					ref="playPauseBtn"
 					@click="playPause"
 					@keydown.space.prevent="playPause"
 					tabindex="0"
-					:aria-label="playing ? 'Pause' : 'Play'"
+					:title="playing ? 'Pause' : 'Play'"
 					class="control-button play-pause"
-					v-html="playing ? '&#10074;&#10074;' : '&#9658;'"
+					v-html="playing ? '&#9654;' : '&#9658;'"
 				></button>
 				<button @click="stop" title="Stop" class="control-button stop">
 					&#9724;
@@ -44,7 +45,7 @@
 					title="Forward 5s"
 					class="control-button forward"
 				>
-					&#11246;
+					&#10227;
 				</button>
 			</div>
 			<div style="margin-top: 10px">
@@ -96,6 +97,7 @@
 
 <script>
 export default {
+	inject: ['datasource'],
 	data() {
 		return {
 			volume: 50,
@@ -105,70 +107,15 @@ export default {
 			playing: false,
 			currentImage: "",
 			previousImage: "",
-			audioSrc: "your-audio-source.mp3",
-			segments: [
-				{
-					start: 0,
-					end: 11,
-					image: "Dave.jpg",
-				},
-				{
-					start: 11,
-					end: 20,
-					image: "Morgan_phone.jpg",
-				},
-				{
-					start: 11,
-					end: 31,
-					image: "Dave.jpg",
-				},
-				{
-					start: 31,
-					end: 50,
-					image: "Morgan_phone.jpg",
-				},
-				{
-					start: 50,
-					end: 54,
-					image: "Dave.jpg",
-				},
-				{
-					start: 54,
-					end: 61,
-					image: "Claudine.jpg",
-				},
-				{
-					start: 61,
-					end: 78,
-					image: "Morgan_phone.jpg",
-				},
-				{
-					start: 78,
-					end: 86,
-					image: "Claudine.jpg",
-				},
-				{
-					start: 86,
-					end: 100,
-					image: "Morgan_phone.jpg",
-				},
-				{
-					start: 100,
-					end: 117,
-					image: "Claudine.jpg",
-				},
-				{
-					start: 117,
-					end: 134,
-					image: "Morgan_phone.jpg",
-				},
-			],
+			audioSrc: "",
+			segments: [],
 			progress: 0,
 			duration: 0,
 			currentTime: 0,
 		};
 	},
-	mounted() {
+	async mounted() {
+		await this.loadData();
 		// preload images
 		this.segments.forEach((segment) => {
 			const img = new Image();
@@ -179,6 +126,20 @@ export default {
 		this.$refs.audio.addEventListener("loadedmetadata", this.audioLoaded);
 	},
 	methods: {
+		async loadData() {
+			try {
+				const response = await fetch(this.datasource);
+				if (!response.ok) {
+					throw new Error(`HTTP error! status: ${response.status}`);
+				}
+				const data = await response.json();
+				this.audioSrc = data.audioSrc;
+				this.segments = data.segments;
+			} catch (error) {
+				console.error("Error fetching JSON data:", error);
+			}
+		},
+
 		stop() {
 			this.$refs.audio.pause();
 			this.playing = false;
@@ -311,12 +272,13 @@ export default {
 <style>
 .audioPlayer {
 	color: white;
-	width: 400px;
+	min-width: 300px;
+	max-width: 60%;
 	margin: 1rem auto;
 	padding: 10px;
 	border-radius: 10px;
 	background-color: #324455;
-	border: 4px double #1a242d;
+	border: 1px solid #1a242d;
 	box-shadow: 0px 3px 6px #999;
 }
 .image {
@@ -344,5 +306,6 @@ export default {
 	cursor: pointer;
 	color: white;
 }
+
 </style>
 

@@ -1,0 +1,30 @@
+﻿{
+	"audioSrc": "./Audio/DDN237_3.4_POV_Activity.mp3",
+	"segments": [
+		{
+			"start": 0,
+			"end": 11,
+			"image": "./images/Dave.png"
+		},
+		{
+			"start": 11,
+			"end": 20,
+			"image": "./images/Morgan_neutral.png"
+		},
+		{
+			"start": 11,
+			"end": 30.5,
+			"image": "./images/Dave.png"
+		},
+		{
+			"start": 30.5,
+			"end": 48.5,
+			"image": "./images/Morgan_neutral.png"
+		},
+		{
+			"start": 48.5,
+			"end": 54,
+			"image": "./images/Dave.png"
+		}
+	]
+}
