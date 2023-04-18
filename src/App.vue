@@ -1,21 +1,11 @@
 <template>
 	<div style="font-family: sans-serif">
 		<div style="width: 100%; display: flex; justify-content: center">
-			<div class="speech-bubble"
-				ref="imageContainer"
-				style="
-					position: relative;
-					width: 500px;
-					height: 300px;
-					overflow: hidden;
-					border-radius: 10px;
-					box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
-				"
-			>
+			<div class="speech-bubble" ref="imageContainer" style="">
 				<img
 					:key="currentImage"
 					:src="currentImage"
-					alt="Current image"
+					:alt="segments.length>0?`Image illustrating the current audio segment: ${segments[currentSegmentIndex].alt}`:``"
 					class="image"
 				/>
 			</div>
@@ -25,7 +15,12 @@
 				<source :src="audioSrc" type="audio/mpeg" />
 			</audio>
 			<div class="control-buttons">
-				<button @click="rewind" title="Rewind 5s" class="control-button rewind">
+				<button
+					@click="rewind"
+					title="Rewind 5s"
+					class="control-button rewind"
+					aria-label="Rewind 5 seconds"
+				>
 					&#10226;
 				</button>
 				<button
@@ -34,15 +29,17 @@
 					@keydown.space.prevent="playPause"
 					tabindex="0"
 					:title="playing ? 'Pause' : 'Play'"
+					:aria-label="playing ? 'Pause' : 'Play'"
 					class="control-button play-pause"
-					v-html="playing ? '&#9654;' : '&#9658;'"
+					v-html="playing ? '&#10073;&#10073;' : '&#9654;'"
 				></button>
-				<button @click="stop" title="Stop" class="control-button stop">
+				<button @click="stop" title="Stop" aria-label="Stop button" class="control-button stop">
 					&#9724;
 				</button>
 				<button
 					@click="forward"
 					title="Forward 5s"
+					aria-label="Forward 5 seconds"
 					class="control-button forward"
 				>
 					&#10227;
@@ -52,6 +49,7 @@
 				<label for="volume">Volume</label>
 				<input
 					id="volume"
+					aria-label="Volume control"
 					type="range"
 					min="0"
 					max="100"
@@ -66,8 +64,7 @@
 				tabindex="0"
 				aria-valuemin="0"
 				:aria-valuemax="Math.round(duration)"
-				:aria-valuenow="Math.round(currentTime)"
-				:aria-valuetext="`Current time: ${formattedCurrentTime}`"
+				:aria-valuetext="playing?``:`Current time: ${formattedCurrentTime}`"
 				style="
 					width: 100%;
 					height: 20px;
@@ -78,7 +75,8 @@
 				@keydown.space.prevent="playPause"
 				@keydown.left.prevent="seekByKeyboard(-5)"
 				@keydown.right.prevent="seekByKeyboard(5)"
-			>
+			> 
+			<!-- progress bar: removed  -->
 				<div
 					:style="{
 						width: progress + '%',
@@ -87,8 +85,8 @@
 					}"
 				></div>
 			</div>
-			<div style="display: flex; justify-content: space-between">
-				<span>{{ formattedCurrentTime }}</span>
+			<div aria-live="off" style="display: flex; justify-content: space-between">
+				<span aria-hidden="true">{{ formattedCurrentTime }}</span>
 				<span>{{ formattedDuration }}</span>
 			</div>
 		</div>
@@ -97,7 +95,7 @@
 
 <script>
 export default {
-	inject: ['datasource'],
+	inject: ["datasource"], // inject datasource from main.js
 	data() {
 		return {
 			volume: 50,
@@ -115,7 +113,7 @@ export default {
 		};
 	},
 	async mounted() {
-		await this.loadData();
+		await this.loadData(); // fetch JSON data
 		// preload images
 		this.segments.forEach((segment) => {
 			const img = new Image();
@@ -128,7 +126,7 @@ export default {
 	methods: {
 		async loadData() {
 			try {
-				const response = await fetch(this.datasource);
+				const response = await fetch(this.datasource); // fetch JSON file from datasource (injected in main.js)
 				if (!response.ok) {
 					throw new Error(`HTTP error! status: ${response.status}`);
 				}
@@ -282,7 +280,6 @@ export default {
 	box-shadow: 0px 3px 6px #999;
 }
 .image {
-	position: absolute;
 	top: 0;
 	left: 0;
 	right: 0;
@@ -290,7 +287,6 @@ export default {
 	margin: auto;
 	min-width: 500px;
 	max-width: 100%;
-	width: 100%;
 	height: auto;
 }
 .control-buttons {
@@ -307,5 +303,12 @@ export default {
 	color: white;
 }
 
+.speech-bubble {
+	position: relative;
+	display: inline-block;
+	overflow: hidden;
+	border-radius: 10px;
+	box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
+}
 </style>
 

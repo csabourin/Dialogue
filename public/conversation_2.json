@@ -4,32 +4,38 @@
 		{
 			"start": 0,
 			"end": 7.5,
-			"image": "images/Claudine_1.png"
+			"image": "images/Claudine_1.png",
+			"alt": "Claudine entering Morgan's office"
 		},
 		{
 			"start": 7.5,
 			"end": 24,
-			"image": "images/Morgan_sad.png"
+			"image": "images/Morgan_sad.png",
+			"alt": "Morgan is sad"
 		},
 		{
 			"start": 24,
 			"end": 32,
-			"image": "images/Claudine_2.png"
+			"image": "images/Claudine_2.png",
+			"alt": "Claudine entering Morgan's office"
 		},
 		{
 			"start": 32,
 			"end": 46,
-			"image": "images/Morgan_sad.png"
+			"image": "images/Morgan_sad.png",
+			"alt": "Morgan is sad"
 		},
 		{
 			"start": 46,
-			"end": 60,
-			"image": "images/Claudine_2.png"
+			"end": 63,
+			"image": "images/Claudine_2.png",
+			"alt": "Claudine entering Morgan's office"
 		},
 		{
-			"start": 60,
-			"end": 78,
-			"image": "images/Morgan_neutral.png"
+			"start": 63,
+			"end": 80,
+			"image": "images/Morgan_neutral.png",
+			"alt": "Morgan is neutral"
 		}
 	]
 }

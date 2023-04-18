@@ -4,27 +4,32 @@
 		{
 			"start": 0,
 			"end": 11,
-			"image": "./images/Dave.png"
+			"image": "./images/Dave.png",
+			"alt": "Dave standing up holding his phone looking angry."
 		},
 		{
 			"start": 11,
 			"end": 20,
-			"image": "./images/Morgan_neutral.png"
+			"image": "./images/Morgan_neutral.png",
+			"alt": "Morgan sitting at a table looking at their screen."
 		},
 		{
 			"start": 11,
 			"end": 30.5,
-			"image": "./images/Dave.png"
+			"image": "./images/Dave.png",
+			"alt": "Dave standing up holding his phone looking angry."
 		},
 		{
 			"start": 30.5,
 			"end": 48.5,
-			"image": "./images/Morgan_neutral.png"
+			"image": "./images/Morgan_neutral.png",
+			"alt": "Morgan sitting at a table looking at their screen."
 		},
 		{
 			"start": 48.5,
 			"end": 54,
-			"image": "./images/Dave.png"
+			"image": "./images/Dave.png",
+			"alt": "Dave standing up holding his phone looking angry."
 		}
 	]
 }
