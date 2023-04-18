@@ -21,13 +21,13 @@
 		},
 		{
 			"start": 30.5,
-			"end": 48.5,
+			"end": 50,
 			"image": "./images/Morgan_neutral.png",
 			"alt": "Morgan sitting at a table looking at their screen."
 		},
 		{
-			"start": 48.5,
-			"end": 54,
+			"start": 50,
+			"end": 55,
 			"image": "./images/Dave.png",
 			"alt": "Dave standing up holding his phone looking angry."
 		}
