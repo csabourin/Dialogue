@@ -1,0 +1,41 @@
+﻿{
+	"audioSrc": "./Audio/DDN237_3.4.1_POV_Activity.mp3",
+	"segments": [
+		{
+			"start": 0,
+			"end": 7.5,
+			"image": "images/Claudine_1.png",
+			"alt": "Claudine entering Morgan's office"
+		},
+		{
+			"start": 7.5,
+			"end": 25.5,
+			"image": "images/Morgan_sad.png",
+			"alt": "Morgan is sad"
+		},
+		{
+			"start": 25.5,
+			"end": 34,
+			"image": "images/Claudine_2.png",
+			"alt": "Claudine entering Morgan's office"
+		},
+		{
+			"start": 34,
+			"end": 48,
+			"image": "images/Morgan_sad.png",
+			"alt": "Morgan is sad"
+		},
+		{
+			"start": 48,
+			"end": 66,
+			"image": "images/Claudine_2.png",
+			"alt": "Claudine entering Morgan's office"
+		},
+		{
+			"start": 66,
+			"end": 83,
+			"image": "images/Morgan_neutral.png",
+			"alt": "Morgan is neutral"
+		}
+	]
+}

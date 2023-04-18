@@ -1,78 +1,28 @@
 <template>
 	<div style="font-family: sans-serif">
-		<h1>Audio Player</h1>
 		<div style="width: 100%; display: flex; justify-content: center">
-			<div
-				ref="imageContainer"
-				style="
-					height: 512px;
-					width: 512px;
-					overflow: hidden;
-					position: relative;
-				"
-			>
+			<div class="speech-bubble" ref="imageContainer" style="">
 				<img
 					:key="currentImage"
 					:src="currentImage"
-					alt="Current image"
+					:alt="
+						segments.length > 0
+							? `Image illustrating the current audio segment: ${segments[currentSegmentIndex].alt}`
+							: ``
+					"
 					class="image"
 				/>
 			</div>
 		</div>
-		<div class="audioPlayer">
-			<audio ref="audio" @timeupdate="updateImage" @ended="reset">
-				<source :src="audioSrc" type="audio/mpeg" />
-			</audio>
-			<div class="control-buttons">
-				<button @click="rewind" title="Rewind 5s" class="control-button rewind">
-					&#11244;
-				</button>
-				<button
-					ref="playPauseBtn"
-					@click="playPause"
-					@keydown.space.prevent="playPause"
-					tabindex="0"
-					:aria-label="playing ? 'Pause' : 'Play'"
-					class="control-button play-pause"
-					v-html="playing ? '&#10074;&#10074;' : '&#9658;'"
-				></button>
-				<button @click="stop" title="Stop" class="control-button stop">
-					&#9724;
-				</button>
-				<button
-					@click="forward"
-					title="Forward 5s"
-					class="control-button forward"
-				>
-					&#11246;
-				</button>
-			</div>
-			<div style="margin-top: 10px">
-				<label for="volume">Volume</label>
-				<input
-					id="volume"
-					type="range"
-					min="0"
-					max="100"
-					v-model="volume"
-					@change="changeVolume"
-					tabindex="0"
-				/>
-			</div>
+		<div v-if="audioSrc" class="audioPlayer">
 			<div
 				ref="progressBar"
 				role="slider"
 				tabindex="0"
 				aria-valuemin="0"
 				:aria-valuemax="Math.round(duration)"
-				:aria-valuenow="Math.round(currentTime)"
-				:aria-valuetext="`Current time: ${formattedCurrentTime}`"
-				style="
-					width: 100%;
-					height: 20px;
-					background-color: lightgray;
-					cursor: pointer;
-				"
+				:aria-valuetext="playing ? `` : `Current time: ${formattedCurrentTime}`"
+				style="width: 100%; height: 15px; cursor: pointer"
 				@click="seek"
 				@keydown.space.prevent="playPause"
 				@keydown.left.prevent="seekByKeyboard(-5)"
@@ -82,13 +32,64 @@
 					:style="{
 						width: progress + '%',
 						height: '100%',
-						backgroundColor: '#1a242d',
+						backgroundColor: '#F99',
 					}"
 				></div>
 			</div>
-			<div style="display: flex; justify-content: space-between">
-				<span>{{ formattedCurrentTime }}</span>
-				<span>{{ formattedDuration }}</span>
+			<div
+				class="time-wrapper"
+				aria-live="off"
+				style="display: flex; justify-content: space-between"
+			>
+				<span>{{ formattedCurrentTime }} / {{ formattedDuration }}</span>
+			</div>
+			<audio ref="audio" @timeupdate="updateImage" @ended="reset">
+				<source :src="audioSrc" type="audio/mpeg" />
+			</audio>
+			<div class="control-buttons">
+				<div class="volume-wrapper">
+					<input
+						id="volume"
+						class="volume-slider"
+						aria-label="Volume control"
+						type="range"
+						min="0"
+						max="100"
+						v-model="volume"
+						@change="changeVolume"
+						tabindex="0"
+					/><label for="volume">&#128362;</label>
+				</div>
+				<div class="buttons-wrapper">
+					<button
+						@click="rewind"
+						title="Rewind 5s"
+						class="control-button rewind"
+						aria-label="Rewind 5 seconds"
+					>
+						&#10226;
+					</button>
+					<button
+						ref="playPauseBtn"
+						@click="playPause"
+						@keydown.space.prevent="playPause"
+						tabindex="0"
+						:title="playing ? 'Pause' : 'Play'"
+						:aria-label="playing ? 'Pause' : 'Play'"
+						class="control-button play-pause"
+						v-html="playing ? '&#10073;&#10073;' : '&#9654;'"
+					></button>
+
+					<button
+						@click="forward"
+						title="Forward 5s"
+						aria-label="Forward 5 seconds"
+						class="control-button forward"
+					>
+						&#10227;
+					</button>
+				</div>
+				<div style="flex-grow: 0.5"></div>
 			</div>
 		</div>
 	</div>
@@ -96,6 +97,7 @@
 
 <script>
 export default {
+	inject: ["datasource"], // inject datasource from main.js
 	data() {
 		return {
 			volume: 50,
@@ -105,70 +107,15 @@ export default {
 			playing: false,
 			currentImage: "",
 			previousImage: "",
-			audioSrc: "your-audio-source.mp3",
-			segments: [
-				{
-					start: 0,
-					end: 11,
-					image: "Dave.jpg",
-				},
-				{
-					start: 11,
-					end: 20,
-					image: "Morgan_phone.jpg",
-				},
-				{
-					start: 11,
-					end: 31,
-					image: "Dave.jpg",
-				},
-				{
-					start: 31,
-					end: 50,
-					image: "Morgan_phone.jpg",
-				},
-				{
-					start: 50,
-					end: 54,
-					image: "Dave.jpg",
-				},
-				{
-					start: 54,
-					end: 61,
-					image: "Claudine.jpg",
-				},
-				{
-					start: 61,
-					end: 78,
-					image: "Morgan_phone.jpg",
-				},
-				{
-					start: 78,
-					end: 86,
-					image: "Claudine.jpg",
-				},
-				{
-					start: 86,
-					end: 100,
-					image: "Morgan_phone.jpg",
-				},
-				{
-					start: 100,
-					end: 117,
-					image: "Claudine.jpg",
-				},
-				{
-					start: 117,
-					end: 134,
-					image: "Morgan_phone.jpg",
-				},
-			],
+			audioSrc: "",
+			segments: [],
 			progress: 0,
 			duration: 0,
 			currentTime: 0,
 		};
 	},
-	mounted() {
+	async mounted() {
+		await this.loadData(); // fetch JSON data
 		// preload images
 		this.segments.forEach((segment) => {
 			const img = new Image();
@@ -179,13 +126,20 @@ export default {
 		this.$refs.audio.addEventListener("loadedmetadata", this.audioLoaded);
 	},
 	methods: {
-		stop() {
-			this.$refs.audio.pause();
-			this.playing = false;
-			this.$refs.audio.currentTime = 0;
-			this.progress = 0;
-			this.currentTime = 0;
+		async loadData() {
+			try {
+				const response = await fetch(this.datasource); // fetch JSON file from datasource (injected in main.js)
+				if (!response.ok) {
+					throw new Error(`HTTP error! status: ${response.status}`);
+				}
+				const data = await response.json();
+				this.audioSrc = data.audioSrc;
+				this.segments = data.segments;
+			} catch (error) {
+				console.error("Error fetching JSON data:", error);
+			}
 		},
+
 		rewind() {
 			this.$refs.audio.currentTime = Math.max(
 				0,
@@ -311,16 +265,16 @@ export default {
 <style>
 .audioPlayer {
 	color: white;
-	width: 400px;
+	min-width: 300px;
+	max-width: 500px;
 	margin: 1rem auto;
 	padding: 10px;
-	border-radius: 10px;
-	background-color: #324455;
-	border: 4px double #1a242d;
+	border-radius: 3px;
+	background-color: #272727;
+	border: 1px solid #1a242d;
 	box-shadow: 0px 3px 6px #999;
 }
 .image {
-	position: absolute;
 	top: 0;
 	left: 0;
 	right: 0;
@@ -328,21 +282,87 @@ export default {
 	margin: auto;
 	min-width: 500px;
 	max-width: 100%;
-	width: 100%;
 	height: auto;
 }
+.time-wrapper {
+	margin-top: 0.5rem;
+}
 .control-buttons {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	width: 100%;
+}
+
+.volume-wrapper {
+	display: flex;
+	align-items: center;
+}
+
+.buttons-wrapper {
 	display: flex;
 	justify-content: center;
 	align-items: center;
 }
 .control-button {
-	font-size: 24px;
+	font-size: 36px;
 	margin-right: 10px;
 	border: none;
 	background-color: transparent;
 	cursor: pointer;
 	color: white;
+}
+.control-button:last-child {
+	margin-right: 0;
+}
+[role="slider"] {
+	-webkit-appearance: none;
+	appearance: none;
+	width: 100%;
+	height: 5px;
+	background-color: rgb(255, 255, 255);
+	box-shadow: inset 1px 1px 2px 0 rgba(0, 0, 0, 0.5);
+	outline: none;
+	opacity: 0.7;
+	transition: opacity 0.2s;
+}
+
+.volume-slider {
+	-webkit-appearance: none;
+	appearance: none;
+	width: 100px;
+	height: 5px;
+	background-color: lightgray;
+	box-shadow: inset 1px 1px 2px 0 rgba(0, 0, 0, 0.5);
+	outline: none;
+	opacity: 0.7;
+	transition: opacity 0.2s;
+}
+
+.volume-slider::-webkit-slider-thumb {
+	-webkit-appearance: none;
+	appearance: none;
+	width: 15px;
+	height: 15px;
+	background-color: #ffffff;
+	cursor: pointer;
+	border-radius: 50%;
+}
+
+.volume-slider::-moz-range-thumb {
+	width: 15px;
+	height: 15px;
+	background-color: #ffffff;
+	cursor: pointer;
+	border-radius: 50%;
+}
+
+.speech-bubble {
+	position: relative;
+	display: inline-block;
+	overflow: hidden;
+	border-radius: 10px;
+	box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
 }
 </style>
 

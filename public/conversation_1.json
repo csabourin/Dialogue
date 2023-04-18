@@ -1,0 +1,35 @@
+﻿{
+	"audioSrc": "./Audio/DDN237_3.4_POV_Activity.mp3",
+	"segments": [
+		{
+			"start": 0,
+			"end": 11,
+			"image": "./images/Dave.png",
+			"alt": "Dave standing up holding his phone looking angry."
+		},
+		{
+			"start": 11,
+			"end": 20,
+			"image": "./images/Morgan_neutral.png",
+			"alt": "Morgan sitting at a table looking at their screen."
+		},
+		{
+			"start": 11,
+			"end": 30.5,
+			"image": "./images/Dave.png",
+			"alt": "Dave standing up holding his phone looking angry."
+		},
+		{
+			"start": 30.5,
+			"end": 50,
+			"image": "./images/Morgan_neutral.png",
+			"alt": "Morgan sitting at a table looking at their screen."
+		},
+		{
+			"start": 50,
+			"end": 55,
+			"image": "./images/Dave.png",
+			"alt": "Dave standing up holding his phone looking angry."
+		}
+	]
+}
