@@ -92,7 +92,7 @@
           :aria-label="
             ccEnabled ? this.$t('turnClosedCaptionsOff') : this.$t('turnClosedCaptionsOn')
           "
-          class="control-button cc-toggle"
+		  :class="['control-button','cc-toggle',{ 'cc-toggle--active': ccEnabled }]"
         >
           CC
         </button>
@@ -534,6 +534,10 @@ border-radius: 5px;
   font-size: small;
 }
 
+.cc-toggle--active {
+  background-color: white;
+  color: black;
+}
 .caption {
   font-size: 16px;
   color: white;
