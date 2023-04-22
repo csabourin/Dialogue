@@ -32,7 +32,7 @@
 					:style="{
 						width: progress + '%',
 						height: '100%',
-						backgroundColor: '#F99',
+						backgroundColor: '#888',
 					}"
 				></div>
 			</div>
@@ -47,25 +47,14 @@
 				<source :src="audioSrc" type="audio/mpeg" />
 			</audio>
 			<div class="control-buttons">
-				<div class="volume-wrapper">
-					<input
-						id="volume"
-						class="volume-slider"
-						aria-label="Volume control"
-						type="range"
-						min="0"
-						max="100"
-						v-model="volume"
-						@change="changeVolume"
-						tabindex="0"
-					/><label for="volume">&#128362;</label>
-				</div>
+				<div style="flex-grow: 0.5"></div>
+				
 				<div class="buttons-wrapper">
 					<button
 						@click="rewind"
-						title="Rewind 5s"
+						:title="$t('rewind')"
 						class="control-button rewind"
-						aria-label="Rewind 5 seconds"
+						:aria-label="$t('rewind')"
 					>
 						&#10226;
 					</button>
@@ -74,22 +63,34 @@
 						@click="playPause"
 						@keydown.space.prevent="playPause"
 						tabindex="0"
-						:title="playing ? 'Pause' : 'Play'"
-						:aria-label="playing ? 'Pause' : 'Play'"
+						:title="playing ? $t('pause') : $t('play')"
+						:aria-label="playing ? $t('pause') : $t('play')"
 						class="control-button play-pause"
 						v-html="playing ? '&#10073;&#10073;' : '&#9654;'"
 					></button>
 
 					<button
 						@click="forward"
-						title="Forward 5s"
-						aria-label="Forward 5 seconds"
+						:title="$t('forward')"
+						:aria-label="$t('forward')"
 						class="control-button forward"
 					>
 						&#10227;
 					</button>
 				</div>
-				<div style="flex-grow: 0.5"></div>
+				<div class="volume-wrapper">
+					<label class="volumeButton" for="volume">&#128362;</label><input
+						id="volume"
+						class="volume-slider"
+						:aria-label="$t('volumeControl')"
+						type="range"
+						min="0"
+						max="100"
+						v-model="volume"
+						@change="changeVolume"
+						tabindex="0"
+					/>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -294,6 +295,10 @@ export default {
 	width: 100%;
 }
 
+.volumeButton{
+	transform:rotate(180deg);
+	font-size: 26px;
+}
 .volume-wrapper {
 	display: flex;
 	align-items: center;
