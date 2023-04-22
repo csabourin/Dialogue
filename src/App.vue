@@ -14,8 +14,8 @@
           class="image"
           :style="imageStyle"
         />
-        <div class="captions-container">
-          <span v-if="ccEnabled" class="caption">{{ displayedCaption }}</span>
+        <div v-if="ccEnabled" class="captions-container">
+          <span class="caption">{{ displayedCaption }}</span>
         </div>
       </div>
     </div>
@@ -90,9 +90,15 @@
           @click="toggleCC"
           :title="ccEnabled ? this.$t('turnCCOff') : this.$t('turnCCOn')"
           :aria-label="
-            ccEnabled ? this.$t('turnClosedCaptionsOff') : this.$t('turnClosedCaptionsOn')
+            ccEnabled
+              ? this.$t('turnClosedCaptionsOff')
+              : this.$t('turnClosedCaptionsOn')
           "
-		  :class="['control-button','cc-toggle',{ 'cc-toggle--active': ccEnabled }]"
+          :class="[
+            'control-button',
+            'cc-toggle',
+            { 'cc-toggle--active': ccEnabled },
+          ]"
         >
           CC
         </button>
@@ -118,13 +124,13 @@
     </div>
     <details class="transcript">
       <summary>Transcript</summary>
-      <div
+      <div 
         v-for="(subtitle, index) in subtitles"
         :key="index"
         class="transcript-entry"
       >
         <span class="transcript-text">{{ subtitle.text }}</span>
-      </div>
+	</div>
     </details>
   </div>
 </template>
@@ -156,21 +162,36 @@ export default {
     };
   },
   async mounted() {
-    await this.loadData(); // fetch JSON data
-    // preload images
-    this.segments.forEach((segment, index) => {
-      const img = new Image();
-      img.src = segment.image;
-      if (index === 0) {
-        img.onload = () => {
-          this.firstImageHeight = img.height;
-        };
-      }
-    });
-    this.currentImage = this.segments[0].image;
-    // add event listener to set duration when metadata is loaded
-    this.$refs.audio.addEventListener("loadedmetadata", this.audioLoaded);
-  },
+  await this.loadData(); // fetch JSON data
+  // preload images
+  this.segments.forEach((segment, index) => {
+    const img = new Image();
+    img.src = segment.image;
+    if (index === 0) {
+      img.onload = () => {
+        this.firstImageHeight = img.height;
+
+        // Add this part to check the image dimensions
+        const aspectRatio = img.width / img.height;
+        const windowWidth = window.innerWidth;
+
+        if (img.width < windowWidth) {
+          this.$refs.imageContainer.style.width = img.width + "px";
+          this.$refs.imageContainer.style.height =
+            img.width / aspectRatio + "px";
+        } else {
+          this.$refs.imageContainer.style.width = windowWidth + "px";
+          this.$refs.imageContainer.style.height =
+            windowWidth / aspectRatio + "px";
+        }
+      };
+    }
+  });
+  this.currentImage = this.segments[0].image;
+  // add event listener to set duration when metadata is loaded
+  this.$refs.audio.addEventListener("loadedmetadata", this.audioLoaded);
+},
+
 
   methods: {
     async loadData() {
@@ -195,18 +216,20 @@ export default {
     },
 
     rewind() {
-      this.$refs.audio.currentTime = Math.max(
-        0,
-        this.$refs.audio.currentTime - 5
-      );
+      if (this.$refs.audio.currentTime < 5) {
+        this.$refs.audio.currentTime = 0;
+		this.progress = 0;
+      } else {
+        this.$refs.audio.currentTime -= 5;
+      }
       this.updateProgress();
     },
     forward() {
-      this.$refs.audio.currentTime = Math.min(
-        this.$refs.audio.duration,
-        this.$refs.audio.currentTime + 5
-      );
-      this.updateProgress();
+      if (this.$refs.audio.currentTime + 5 > this.$refs.audio.duration) {
+        this.$refs.audio.currentTime = this.$refs.audio.duration;
+      } else {
+        this.$refs.audio.currentTime += 5;
+      }
     },
     changeVolume() {
       this.$refs.audio.volume = this.volume / 100;
@@ -365,7 +388,8 @@ export default {
       if (this.firstImageHeight === 0) {
         return "";
       }
-      return `height: ${this.firstImageHeight}px; object-fit: contain;`;
+    //   return `height: ${this.firstImageHeight}px; object-fit: contain;`;
+      return `height: 100%; object-fit: contain;`;
     },
     formattedCurrentTime() {
       return this.formatTime(this.currentTime);
@@ -528,8 +552,8 @@ export default {
 }
 
 .cc-toggle {
-border: 1px solid white;
-border-radius: 5px;
+  border: 1px solid white;
+  border-radius: 5px;
   cursor: pointer;
   font-size: small;
 }
@@ -560,7 +584,16 @@ border-radius: 5px;
 }
 
 .transcript-entry {
+	display: inline;
   margin-bottom: 1rem;
+  line-height: 1.5rem;
+}
+
+.transcript-entry:after{
+	content:" ";
+}
+.transcript-entry:first-of-type {
+  margin-top: 1rem;
 }
 
 .transcript-time {
