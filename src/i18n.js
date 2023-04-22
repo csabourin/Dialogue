@@ -7,6 +7,10 @@ const messages = {
     play: "Play",
     pause: "Pause",
     volumeControl: "Volume control",
+    turnCCOn: 'Turn CC On',
+    turnCCOff: 'Turn CC Off',
+    turnClosedCaptionsOn: 'Turn Closed Captions On',
+    turnClosedCaptionsOff: 'Turn Closed Captions Off',
   },
   fr: {
     rewind: "Reculer de 5 secondes",
@@ -14,6 +18,10 @@ const messages = {
     play: "Lecture",
     pause: "Pause",
     volumeControl: "Contrôle du volume",
+    turnCCOn: 'Activer les sous-titres',
+    turnCCOff: 'Désactiver les sous-titres',
+    turnClosedCaptionsOn: 'Activer les sous-titres',
+    turnClosedCaptionsOff: 'Désactiver les sous-titres',
   },
 };
 

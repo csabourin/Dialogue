@@ -1,443 +1,570 @@
 <template>
-	<div style="font-family: sans-serif">
-		<div style="width: 100%; display: flex; justify-content: center">
-			<div class="speech-bubble" ref="imageContainer" style="">
-				<img
-					ref="image"
-					:key="currentImage"
-					:src="currentImage"
-					:alt="
-						segments.length > 0
-							? `Image illustrating the current audio segment: ${segments[currentSegmentIndex].alt}`
-							: ``
-					"
-					class="image"
-					:style="imageStyle"
-				/>
-			</div>
-		</div>
-		<div v-if="audioSrc" class="audioPlayer no-select">
-			<div
-				ref="progressBar"
-				role="slider"
-				tabindex="0"
-				aria-valuemin="0"
-				:aria-valuemax="Math.round(duration)"
-				:aria-valuetext="playing ? `` : `Current time: ${formattedCurrentTime}`"
-				style="width: 100%; height: 15px; cursor: pointer"
-				@click="seek"
-				@mousedown="startSeek"
-				@mousemove="updateSeek"
-				@mouseup="stopSeek"
-				@keydown.space.prevent="playPause"
-				@keydown.left.prevent="seekByKeyboard(-5)"
-				@keydown.right.prevent="seekByKeyboard(5)"
-			>
-				<div
-					:style="{
-						width: progress + '%',
-						height: '100%',
-						backgroundColor: '#889',
-					}"
-				></div>
-			</div>
-			<div
-				class="time-wrapper"
-				aria-live="off"
-				style="display: flex; justify-content: space-between"
-			>
-				<span>{{ formattedCurrentTime }} / {{ formattedDuration }}</span>
-			</div>
-			<audio ref="audio" @timeupdate="updateImage" @ended="reset">
-				<source :src="audioSrc" type="audio/mpeg" />
-			</audio>
-			<div class="control-buttons">
-				<div style="flex-grow: 0.5"></div>
+  <div style="font-family: sans-serif">
+    <div style="width: 100%; display: flex; justify-content: center">
+      <div class="speech-bubble" ref="imageContainer" style="">
+        <img
+          ref="image"
+          :key="currentImage"
+          :src="currentImage"
+          :alt="
+            segments.length > 0
+              ? `Image illustrating the current audio segment: ${segments[currentSegmentIndex].alt}`
+              : ``
+          "
+          class="image"
+          :style="imageStyle"
+        />
+        <div class="captions-container">
+          <span v-if="ccEnabled" class="caption">{{ displayedCaption }}</span>
+        </div>
+      </div>
+    </div>
+    <div v-if="audioSrc" class="audioPlayer no-select">
+      <div
+        ref="progressBar"
+        role="slider"
+        tabindex="0"
+        aria-valuemin="0"
+        :aria-valuemax="Math.round(duration)"
+        :aria-valuetext="playing ? `` : `Current time: ${formattedCurrentTime}`"
+        style="width: 100%; height: 15px; cursor: pointer"
+        @click="seek"
+        @mousedown="startSeek"
+        @mousemove="updateSeek"
+        @mouseup="stopSeek"
+        @keydown.space.prevent="playPause"
+        @keydown.left.prevent="seekByKeyboard(-5)"
+        @keydown.right.prevent="seekByKeyboard(5)"
+      >
+        <div
+          :style="{
+            width: progress + '%',
+            height: '100%',
+            backgroundColor: '#889',
+          }"
+        ></div>
+      </div>
+      <div
+        class="time-wrapper"
+        aria-live="off"
+        style="display: flex; justify-content: space-between"
+      >
+        <span>{{ formattedCurrentTime }} / {{ formattedDuration }}</span>
+      </div>
+      <audio ref="audio" @timeupdate="updateImage" @ended="reset">
+        <source :src="audioSrc" type="audio/mpeg" />
+      </audio>
+      <div class="control-buttons">
+        <div style="flex-grow: 0.5"></div>
 
-				<div class="buttons-wrapper">
-					<button
-						@click="rewind"
-						:title="$t('rewind')"
-						class="control-button rewind"
-						:aria-label="$t('rewind')"
-					>
-						&#10226;
-					</button>
-					<button
-						ref="playPauseBtn"
-						@click="playPause"
-						@keydown.space.prevent="playPause"
-						tabindex="0"
-						:title="playing ? $t('pause') : $t('play')"
-						:aria-label="playing ? $t('pause') : $t('play')"
-						class="control-button play-pause"
-						v-html="playing ? '&#10073;&#10073;' : '&#9654;'"
-					></button>
+        <div class="buttons-wrapper">
+          <button
+            @click="rewind"
+            :title="$t('rewind')"
+            class="control-button rewind"
+            :aria-label="$t('rewind')"
+          >
+            &#10226;
+          </button>
+          <button
+            ref="playPauseBtn"
+            @click="playPause"
+            @keydown.space.prevent="playPause"
+            tabindex="0"
+            :title="playing ? $t('pause') : $t('play')"
+            :aria-label="playing ? $t('pause') : $t('play')"
+            class="control-button play-pause"
+            v-html="playing ? '&#10073;&#10073;' : '&#9654;'"
+          ></button>
 
-					<button
-						@click="forward"
-						:title="$t('forward')"
-						:aria-label="$t('forward')"
-						class="control-button forward"
-					>
-						&#10227;
-					</button>
-				</div>
-				<div class="volume-wrapper">
-					<label class="volumeButton" for="volume">&#128362;</label
-					><input
-						id="volume"
-						class="volume-slider"
-						:aria-label="$t('volumeControl')"
-						type="range"
-						min="0"
-						max="100"
-						v-model="volume"
-						@change="changeVolume"
-						@mousedown="startVolumeChange"
-						@mousemove="updateVolume"
-						@mouseout="stopVolumeChange"
-						@mouseup="stopVolumeChange"
-						tabindex="0"
-					/>
-				</div>
-			</div>
-		</div>
-	</div>
+          <button
+            @click="forward"
+            :title="$t('forward')"
+            :aria-label="$t('forward')"
+            class="control-button forward"
+          >
+            &#10227;
+          </button>
+        </div>
+        <button
+          @click="toggleCC"
+          :title="ccEnabled ? this.$t('turnCCOff') : this.$t('turnCCOn')"
+          :aria-label="
+            ccEnabled ? this.$t('turnClosedCaptionsOff') : this.$t('turnClosedCaptionsOn')
+          "
+          class="control-button cc-toggle"
+        >
+          CC
+        </button>
+        <div class="volume-wrapper">
+          <label class="volumeButton" for="volume">&#128362;</label
+          ><input
+            id="volume"
+            class="volume-slider"
+            :aria-label="$t('volumeControl')"
+            type="range"
+            min="0"
+            max="100"
+            v-model="volume"
+            @change="changeVolume"
+            @mousedown="startVolumeChange"
+            @mousemove="updateVolume"
+            @mouseout="stopVolumeChange"
+            @mouseup="stopVolumeChange"
+            tabindex="0"
+          />
+        </div>
+      </div>
+    </div>
+    <details class="transcript">
+      <summary>Transcript</summary>
+      <div
+        v-for="(subtitle, index) in subtitles"
+        :key="index"
+        class="transcript-entry"
+      >
+        <span class="transcript-text">{{ subtitle.text }}</span>
+      </div>
+    </details>
+  </div>
 </template>
 
 <script>
 export default {
-	inject: ["datasource"], // inject datasource from main.js
-	data() {
-		return {
-			volume: 50,
-			firstImageHeight: 0,
-			animating: false,
-			seeking: false,
-			changingVolume: false,
-			currentSegmentIndex: 0,
-			isImage1OnTop: true,
-			playing: false,
-			currentImage: "",
-			previousImage: "",
-			audioSrc: "",
-			segments: [],
-			progress: 0,
-			duration: 0,
-			currentTime: 0,
-		};
-	},
-	async mounted() {
-  await this.loadData(); // fetch JSON data
-  // preload images
-  this.segments.forEach((segment, index) => {
-    const img = new Image();
-    img.src = segment.image;
-    if (index === 0) {
-      img.onload = () => {
-        this.firstImageHeight = img.height;
-      };
-    }
-  });
-  this.currentImage = this.segments[0].image;
-  // add event listener to set duration when metadata is loaded
-  this.$refs.audio.addEventListener("loadedmetadata", this.audioLoaded);
-},
-
-	methods: {
-		async loadData() {
-			try {
-				const response = await fetch(this.datasource); // fetch JSON file from datasource (injected in main.js)
-				if (!response.ok) {
-					throw new Error(`HTTP error! status: ${response.status}`);
-				}
-				const data = await response.json();
-				this.audioSrc = data.audioSrc;
-				this.segments = data.segments;
-			} catch (error) {
-				console.error("Error fetching JSON data:", error);
-			}
-		},
-
-		rewind() {
-			this.$refs.audio.currentTime = Math.max(
-				0,
-				this.$refs.audio.currentTime - 5
-			);
-			this.updateProgress();
-		},
-		forward() {
-			this.$refs.audio.currentTime = Math.min(
-				this.$refs.audio.duration,
-				this.$refs.audio.currentTime + 5
-			);
-			this.updateProgress();
-		},
-		changeVolume() {
-			this.$refs.audio.volume = this.volume / 100;
-		},
-
-		debounce(func, wait) {
-			let timeout;
-			return function (...args) {
-				clearTimeout(timeout);
-				timeout = setTimeout(() => func.apply(this, args), wait);
-			};
-		},
-		playPause() {
-			if (this.playing) {
-				this.$refs.audio.pause();
-			} else {
-				this.$refs.audio.play();
-			}
-			this.playing = !this.playing;
-		},
-		updateImage() {
-			const currentTime = Math.round(this.$refs.audio.currentTime * 10) / 10;
-			const currentSegmentIndex = this.segments.findIndex(
-				(segment) => currentTime >= segment.start && currentTime < segment.end
-			);
-
-			if (currentSegmentIndex !== this.currentSegmentIndex) {
-				this.currentSegmentIndex = currentSegmentIndex;
-				this.previousImage = this.currentImage;
-				this.currentImage = this.segments[currentSegmentIndex].image;
-			}
-
-			this.updateProgress();
-		},
-
-		reset() {
-			this.playing = false;
-			this.progress = 100;
-			this.$refs.audio.currentTime = 0;
-		},
-		updateProgress() {
-			const currentTime = this.$refs.audio.currentTime;
-			const duration = this.$refs.audio.duration;
-			if (duration && currentTime) {
-				this.progress = (currentTime / duration) * 100;
-			}
-		},
-
-		seek(event) {
-			const progressBar = this.$refs.progressBar;
-			const rect = progressBar.getBoundingClientRect();
-			const x = event.clientX - rect.left;
-			let percentage = (x / progressBar.offsetWidth) * 100;
-
-			// Clamp percentage value between 0 and 100
-			percentage = Math.max(0, Math.min(100, percentage));
-
-			this.progress = percentage;
-			const duration = this.$refs.audio.duration;
-			if (duration) {
-				const newTime = (percentage / 100) * duration;
-
-				// Clamp newTime value between 0 and duration
-				this.$refs.audio.currentTime = Math.max(0, Math.min(newTime, duration));
-			}
-		},
-		seekByKeyboard(offset) {
-			const duration = this.$refs.audio.duration;
-			if (duration) {
-				let newTime = this.$refs.audio.currentTime + offset;
-				newTime = Math.max(0, Math.min(newTime, duration));
-				this.$refs.audio.currentTime = newTime;
-			}
-		},
-		formatTime(time) {
-			const minutes = Math.floor(time / 60);
-			const seconds = Math.floor(time % 60);
-			return `${minutes}:${seconds.toString().padStart(2, "0")}`;
-		},
-		audioLoaded() {
-			this.duration = this.$refs.audio.duration;
-		},
-		startSeek(event) {
-			this.seeking = true;
-			this.seek(event);
-			window.addEventListener("mousemove", this.updateSeek);
-			window.addEventListener("mouseup", this.stopSeek);
-		},
-		updateSeek(event) {
-			if (this.seeking) {
-				this.seek(event);
-			}
-		},
-		stopSeek() {
-			if (this.seeking) {
-				this.seeking = false;
-				window.removeEventListener("mousemove", this.updateSeek);
-				window.removeEventListener("mouseup", this.stopSeek);
-			}
-		},
-
-		startVolumeChange() {
-			this.changingVolume = true;
-		},
-		updateVolume(event) {
-			if (this.changingVolume) {
-				this.volume = event.target.value;
-				this.changeVolume();
-			}
-		},
-		stopVolumeChange() {
-			this.changingVolume = false;
-		},
-	},
-	computed: {
-		imageStyle() {
-    if (this.firstImageHeight === 0) {
-      return "";
-    }
-    return `height: ${this.firstImageHeight}px; object-fit: contain;`;
+  inject: ["datasource"], // inject datasource from main.js
+  data() {
+    return {
+      volume: 50,
+      firstImageHeight: 0,
+      animating: false,
+      seeking: false,
+      changingVolume: false,
+      currentSegmentIndex: 0,
+      isImage1OnTop: true,
+      playing: false,
+      currentImage: "",
+      previousImage: "",
+      audioSrc: "",
+      segments: [],
+      progress: 0,
+      duration: 0,
+      currentTime: 0,
+      currentCaption: "",
+      subtitles: [],
+      currentSubtitleIndex: 0,
+      ccEnabled: false,
+    };
   },
-		formattedCurrentTime() {
-			return this.formatTime(this.currentTime);
-		},
-		formattedDuration() {
-			return this.formatTime(this.duration);
-		},
-		nextImage() {
-			if (this.currentSegmentIndex < this.segments.length - 1) {
-				return this.segments[this.currentSegmentIndex + 1].image;
-			} else {
-				return this.segments[0].image;
-			}
-		},
-	},
-	watch: {
-			playing() {
-			if (this.playing) {
-				this.$refs.audio.ontimeupdate = () => {
-					this.currentTime = this.$refs.audio.currentTime;
-				};
-			} else {
-				this.$refs.audio.ontimeupdate = null;
-			}
-		},
-		progress(newProgress) {
-			const duration = this.$refs.audio.duration;
-			if (duration) {
-				this.currentTime = (newProgress / 100) * duration;
-			}
-		},
-	},
+  async mounted() {
+    await this.loadData(); // fetch JSON data
+    // preload images
+    this.segments.forEach((segment, index) => {
+      const img = new Image();
+      img.src = segment.image;
+      if (index === 0) {
+        img.onload = () => {
+          this.firstImageHeight = img.height;
+        };
+      }
+    });
+    this.currentImage = this.segments[0].image;
+    // add event listener to set duration when metadata is loaded
+    this.$refs.audio.addEventListener("loadedmetadata", this.audioLoaded);
+  },
+
+  methods: {
+    async loadData() {
+      try {
+        const response = await fetch(this.datasource); // fetch JSON file from datasource (injected in main.js)
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        this.audioSrc = data.audioSrc;
+        this.segments = data.segments;
+
+        const vttResponse = await fetch(data.subtitleSrc);
+        if (!vttResponse.ok) {
+          throw new Error(`HTTP error! status: ${vttResponse.status}`);
+        }
+        const vttData = await vttResponse.text();
+        this.subtitles = this.parseVTT(vttData);
+      } catch (error) {
+        console.error("Error fetching JSON data:", error);
+      }
+    },
+
+    rewind() {
+      this.$refs.audio.currentTime = Math.max(
+        0,
+        this.$refs.audio.currentTime - 5
+      );
+      this.updateProgress();
+    },
+    forward() {
+      this.$refs.audio.currentTime = Math.min(
+        this.$refs.audio.duration,
+        this.$refs.audio.currentTime + 5
+      );
+      this.updateProgress();
+    },
+    changeVolume() {
+      this.$refs.audio.volume = this.volume / 100;
+    },
+    toggleCC() {
+      this.ccEnabled = !this.ccEnabled;
+    },
+
+    debounce(func, wait) {
+      let timeout;
+      return function (...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), wait);
+      };
+    },
+    playPause() {
+      if (this.playing) {
+        this.$refs.audio.pause();
+      } else {
+        this.$refs.audio.play();
+      }
+      this.playing = !this.playing;
+    },
+    updateImage() {
+      const currentTime = this.$refs.audio.currentTime;
+      const currentSegmentIndex = this.segments.findIndex(
+        (segment) => currentTime >= segment.start && currentTime < segment.end
+      );
+
+      if (currentSegmentIndex !== this.currentSegmentIndex) {
+        this.currentSegmentIndex = currentSegmentIndex;
+        this.previousImage = this.currentImage;
+        this.currentImage = this.segments[currentSegmentIndex].image;
+      }
+
+      this.updateProgress();
+
+      const currentSubtitleIndex = this.subtitles.findIndex(
+        (subtitle) =>
+          currentTime >= subtitle.startTime && currentTime < subtitle.endTime
+      );
+
+      if (currentSubtitleIndex !== this.currentSubtitleIndex) {
+        this.currentSubtitleIndex = currentSubtitleIndex;
+        this.currentCaption = this.subtitles[currentSubtitleIndex];
+      }
+    },
+
+    reset() {
+      this.playing = false;
+      this.progress = 100;
+      this.$refs.audio.currentTime = 0;
+    },
+    updateProgress() {
+      const currentTime = this.$refs.audio.currentTime;
+      const duration = this.$refs.audio.duration;
+      if (duration && currentTime) {
+        this.progress = (currentTime / duration) * 100;
+      }
+    },
+
+    seek(event) {
+      const progressBar = this.$refs.progressBar;
+      const rect = progressBar.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      let percentage = (x / progressBar.offsetWidth) * 100;
+
+      // Clamp percentage value between 0 and 100
+      percentage = Math.max(0, Math.min(100, percentage));
+
+      this.progress = percentage;
+      const duration = this.$refs.audio.duration;
+      if (duration) {
+        const newTime = (percentage / 100) * duration;
+
+        // Clamp newTime value between 0 and duration
+        this.$refs.audio.currentTime = Math.max(0, Math.min(newTime, duration));
+      }
+    },
+    seekByKeyboard(offset) {
+      const duration = this.$refs.audio.duration;
+      if (duration) {
+        let newTime = this.$refs.audio.currentTime + offset;
+        newTime = Math.max(0, Math.min(newTime, duration));
+        this.$refs.audio.currentTime = newTime;
+      }
+    },
+    formatTime(time) {
+      const minutes = Math.floor(time / 60);
+      const seconds = Math.floor(time % 60);
+      return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+    },
+    audioLoaded() {
+      this.duration = this.$refs.audio.duration;
+    },
+    startSeek(event) {
+      this.seeking = true;
+      this.seek(event);
+      window.addEventListener("mousemove", this.updateSeek);
+      window.addEventListener("mouseup", this.stopSeek);
+    },
+    updateSeek(event) {
+      if (this.seeking) {
+        this.seek(event);
+      }
+    },
+    stopSeek() {
+      if (this.seeking) {
+        this.seeking = false;
+        window.removeEventListener("mousemove", this.updateSeek);
+        window.removeEventListener("mouseup", this.stopSeek);
+      }
+    },
+
+    startVolumeChange() {
+      this.changingVolume = true;
+    },
+    updateVolume(event) {
+      if (this.changingVolume) {
+        this.volume = event.target.value;
+        this.changeVolume();
+      }
+    },
+    stopVolumeChange() {
+      this.changingVolume = false;
+    },
+    parseVTT(vtt) {
+      const regex =
+        /(\d{2}:\d{2}:\d{2}[,.]\d{3}) --> (\d{2}:\d{2}:\d{2}[,.]\d{3})\s*(.*)/g;
+      const subtitles = [];
+      let match;
+
+      while ((match = regex.exec(vtt)) !== null) {
+        const startTime = this.timeStringToSeconds(match[1]);
+        const endTime = this.timeStringToSeconds(match[2]);
+        const text = match[3].replace(/<[^>]+>/g, ""); // Remove VTT tags from the text
+        subtitles.push({ startTime, endTime, text });
+      }
+
+      return subtitles;
+    },
+
+    timeStringToSeconds(timeString) {
+      const [hours, minutes, seconds] = timeString.split(":");
+      const [secondsPart, milliseconds] = seconds.split(/[,.]/);
+      return (
+        parseInt(hours) * 3600 +
+        parseInt(minutes) * 60 +
+        parseInt(secondsPart) +
+        parseInt(milliseconds) / 1000
+      );
+    },
+  },
+  computed: {
+    imageStyle() {
+      if (this.firstImageHeight === 0) {
+        return "";
+      }
+      return `height: ${this.firstImageHeight}px; object-fit: contain;`;
+    },
+    formattedCurrentTime() {
+      return this.formatTime(this.currentTime);
+    },
+    formattedDuration() {
+      return this.formatTime(this.duration);
+    },
+    nextImage() {
+      if (this.currentSegmentIndex < this.segments.length - 1) {
+        return this.segments[this.currentSegmentIndex + 1].image;
+      } else {
+        return this.segments[0].image;
+      }
+    },
+    displayedCaption() {
+      return this.currentCaption ? this.currentCaption.text : "";
+    },
+  },
+  watch: {
+    playing() {
+      if (this.playing) {
+        this.$refs.audio.ontimeupdate = () => {
+          this.currentTime = this.$refs.audio.currentTime;
+        };
+      } else {
+        this.$refs.audio.ontimeupdate = null;
+      }
+    },
+    progress(newProgress) {
+      const duration = this.$refs.audio.duration;
+      if (duration) {
+        this.currentTime = (newProgress / 100) * duration;
+      }
+    },
+  },
 };
 </script>
 
 <style>
 .audioPlayer {
-	color: white;
-	min-width: 300px;
-	max-width: 500px;
-	margin: 1rem auto;
-	padding: 10px;
-	border-radius: 3px;
-	background-color: #272727;
-	border: 1px solid #1a242d;
-	box-shadow: 0px 3px 6px #999;
+  color: white;
+  min-width: 300px;
+  max-width: 500px;
+  margin: 1rem auto;
+  padding: 10px;
+  border-radius: 3px;
+  background-color: #272727;
+  border: 1px solid #1a242d;
+  box-shadow: 0px 3px 6px #999;
 }
 
 .no-select {
-	user-select: none;
-	-webkit-user-select: none;
-	-moz-user-select: none;
-	-ms-user-select: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 
 .image {
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	margin: auto;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
 }
 .time-wrapper {
-	margin-top: 0.5rem;
+  margin-top: 0.5rem;
 }
 .control-buttons {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
 }
 
 .volumeButton {
-	transform: rotate(180deg);
-	font-size: 26px;
+  transform: rotate(180deg);
+  font-size: 26px;
 }
 .volume-wrapper {
-	display: flex;
-	align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .buttons-wrapper {
-	display: flex;
-	justify-content: center;
-	align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .control-button {
-	font-size: 36px;
-	margin-right: 10px;
-	border: none;
-	background-color: transparent;
-	cursor: pointer;
-	color: white;
+  font-size: 36px;
+  margin-right: 10px;
+  border: none;
+  background-color: transparent;
+  cursor: pointer;
+  color: white;
 }
 .control-button:last-child {
-	margin-right: 0;
+  margin-right: 0;
 }
 [role="slider"] {
-	-webkit-appearance: none;
-	appearance: none;
-	width: 100%;
-	height: 5px;
-	background-color: rgb(255, 255, 255);
-	box-shadow: inset 1px 1px 2px 0 rgba(0, 0, 0, 0.5);
-	outline: none;
-	opacity: 0.7;
-	transition: opacity 0.2s;
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 5px;
+  background-color: rgb(255, 255, 255);
+  box-shadow: inset 1px 1px 2px 0 rgba(0, 0, 0, 0.5);
+  outline: none;
+  opacity: 0.7;
+  transition: opacity 0.2s;
 }
 
 .volume-slider {
-	-webkit-appearance: none;
-	appearance: none;
-	width: 100px;
-	height: 5px;
-	background-color: lightgray;
-	box-shadow: inset 1px 1px 2px 0 rgba(0, 0, 0, 0.5);
-	outline: none;
-	opacity: 0.7;
-	transition: opacity 0.2s;
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100px;
+  height: 5px;
+  background-color: lightgray;
+  box-shadow: inset 1px 1px 2px 0 rgba(0, 0, 0, 0.5);
+  outline: none;
+  opacity: 0.7;
+  transition: opacity 0.2s;
 }
 
 .volume-slider::-webkit-slider-thumb {
-	-webkit-appearance: none;
-	appearance: none;
-	width: 15px;
-	height: 15px;
-	background-color: #ffffff;
-	cursor: pointer;
-	border-radius: 50%;
+  -webkit-appearance: none;
+  appearance: none;
+  width: 15px;
+  height: 15px;
+  background-color: #ffffff;
+  cursor: pointer;
+  border-radius: 50%;
 }
 
 .volume-slider::-moz-range-thumb {
-	width: 15px;
-	height: 15px;
-	background-color: #ffffff;
-	cursor: pointer;
-	border-radius: 50%;
+  width: 15px;
+  height: 15px;
+  background-color: #ffffff;
+  cursor: pointer;
+  border-radius: 50%;
 }
 
 .speech-bubble {
-	position: relative;
-	display: inline-block;
-	overflow: hidden;
-	border-radius: 10px;
-	box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  border-radius: 10px;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
+}
+.captions-container {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+.cc-toggle {
+border: 1px solid white;
+border-radius: 5px;
+  cursor: pointer;
+  font-size: small;
+}
+
+.caption {
+  font-size: 16px;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  display: inline-block;
+  max-width: 100%;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  word-break: break-word;
+}
+
+.transcript {
+  width: 100%;
+  max-width: 500px;
+  margin: 1rem auto;
+  padding: 10px;
+  border: 1px solid #1a242d;
+  box-shadow: 0px 3px 6px #999;
+}
+
+.transcript-entry {
+  margin-bottom: 1rem;
+}
+
+.transcript-time {
+  font-weight: bold;
+  color: #272727;
+}
+
+.transcript-text {
+  margin: 0;
 }
 </style>
-

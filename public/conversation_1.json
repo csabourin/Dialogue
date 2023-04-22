@@ -1,5 +1,6 @@
 ﻿{
 	"audioSrc": "./Audio/DDN237_3.4_POV_Activity.mp3",
+	"subtitleSrc": "./Audio/ddn237_34_pov_activity.vtt",
 	"segments": [
 		{
 			"start": 0,
