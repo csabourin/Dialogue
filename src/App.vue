@@ -3,6 +3,7 @@
 		<div style="width: 100%; display: flex; justify-content: center">
 			<div class="speech-bubble" ref="imageContainer" style="">
 				<img
+					ref="image"
 					:key="currentImage"
 					:src="currentImage"
 					:alt="
@@ -11,10 +12,11 @@
 							: ``
 					"
 					class="image"
+					:style="imageStyle"
 				/>
 			</div>
 		</div>
-		<div v-if="audioSrc" class="audioPlayer">
+		<div v-if="audioSrc" class="audioPlayer no-select">
 			<div
 				ref="progressBar"
 				role="slider"
@@ -24,6 +26,9 @@
 				:aria-valuetext="playing ? `` : `Current time: ${formattedCurrentTime}`"
 				style="width: 100%; height: 15px; cursor: pointer"
 				@click="seek"
+				@mousedown="startSeek"
+				@mousemove="updateSeek"
+				@mouseup="stopSeek"
 				@keydown.space.prevent="playPause"
 				@keydown.left.prevent="seekByKeyboard(-5)"
 				@keydown.right.prevent="seekByKeyboard(5)"
@@ -32,7 +37,7 @@
 					:style="{
 						width: progress + '%',
 						height: '100%',
-						backgroundColor: '#888',
+						backgroundColor: '#889',
 					}"
 				></div>
 			</div>
@@ -48,7 +53,7 @@
 			</audio>
 			<div class="control-buttons">
 				<div style="flex-grow: 0.5"></div>
-				
+
 				<div class="buttons-wrapper">
 					<button
 						@click="rewind"
@@ -79,7 +84,8 @@
 					</button>
 				</div>
 				<div class="volume-wrapper">
-					<label class="volumeButton" for="volume">&#128362;</label><input
+					<label class="volumeButton" for="volume">&#128362;</label
+					><input
 						id="volume"
 						class="volume-slider"
 						:aria-label="$t('volumeControl')"
@@ -88,6 +94,10 @@
 						max="100"
 						v-model="volume"
 						@change="changeVolume"
+						@mousedown="startVolumeChange"
+						@mousemove="updateVolume"
+						@mouseout="stopVolumeChange"
+						@mouseup="stopVolumeChange"
 						tabindex="0"
 					/>
 				</div>
@@ -102,7 +112,10 @@ export default {
 	data() {
 		return {
 			volume: 50,
+			firstImageHeight: 0,
 			animating: false,
+			seeking: false,
+			changingVolume: false,
 			currentSegmentIndex: 0,
 			isImage1OnTop: true,
 			playing: false,
@@ -116,16 +129,22 @@ export default {
 		};
 	},
 	async mounted() {
-		await this.loadData(); // fetch JSON data
-		// preload images
-		this.segments.forEach((segment) => {
-			const img = new Image();
-			img.src = segment.image;
-		});
-		this.currentImage = this.segments[0].image;
-		// add event listener to set duration when metadata is loaded
-		this.$refs.audio.addEventListener("loadedmetadata", this.audioLoaded);
-	},
+  await this.loadData(); // fetch JSON data
+  // preload images
+  this.segments.forEach((segment, index) => {
+    const img = new Image();
+    img.src = segment.image;
+    if (index === 0) {
+      img.onload = () => {
+        this.firstImageHeight = img.height;
+      };
+    }
+  });
+  this.currentImage = this.segments[0].image;
+  // add event listener to set duration when metadata is loaded
+  this.$refs.audio.addEventListener("loadedmetadata", this.audioLoaded);
+},
+
 	methods: {
 		async loadData() {
 			try {
@@ -146,12 +165,14 @@ export default {
 				0,
 				this.$refs.audio.currentTime - 5
 			);
+			this.updateProgress();
 		},
 		forward() {
 			this.$refs.audio.currentTime = Math.min(
 				this.$refs.audio.duration,
 				this.$refs.audio.currentTime + 5
 			);
+			this.updateProgress();
 		},
 		changeVolume() {
 			this.$refs.audio.volume = this.volume / 100;
@@ -173,7 +194,7 @@ export default {
 			this.playing = !this.playing;
 		},
 		updateImage() {
-			const currentTime = this.$refs.audio.currentTime;
+			const currentTime = Math.round(this.$refs.audio.currentTime * 10) / 10;
 			const currentSegmentIndex = this.segments.findIndex(
 				(segment) => currentTime >= segment.start && currentTime < segment.end
 			);
@@ -189,7 +210,7 @@ export default {
 
 		reset() {
 			this.playing = false;
-			this.progress = 0;
+			this.progress = 100;
 			this.$refs.audio.currentTime = 0;
 		},
 		updateProgress() {
@@ -204,11 +225,18 @@ export default {
 			const progressBar = this.$refs.progressBar;
 			const rect = progressBar.getBoundingClientRect();
 			const x = event.clientX - rect.left;
-			const percentage = (x / progressBar.offsetWidth) * 100;
+			let percentage = (x / progressBar.offsetWidth) * 100;
+
+			// Clamp percentage value between 0 and 100
+			percentage = Math.max(0, Math.min(100, percentage));
+
 			this.progress = percentage;
 			const duration = this.$refs.audio.duration;
 			if (duration) {
-				this.$refs.audio.currentTime = (percentage / 100) * duration;
+				const newTime = (percentage / 100) * duration;
+
+				// Clamp newTime value between 0 and duration
+				this.$refs.audio.currentTime = Math.max(0, Math.min(newTime, duration));
 			}
 		},
 		seekByKeyboard(offset) {
@@ -227,8 +255,45 @@ export default {
 		audioLoaded() {
 			this.duration = this.$refs.audio.duration;
 		},
+		startSeek(event) {
+			this.seeking = true;
+			this.seek(event);
+			window.addEventListener("mousemove", this.updateSeek);
+			window.addEventListener("mouseup", this.stopSeek);
+		},
+		updateSeek(event) {
+			if (this.seeking) {
+				this.seek(event);
+			}
+		},
+		stopSeek() {
+			if (this.seeking) {
+				this.seeking = false;
+				window.removeEventListener("mousemove", this.updateSeek);
+				window.removeEventListener("mouseup", this.stopSeek);
+			}
+		},
+
+		startVolumeChange() {
+			this.changingVolume = true;
+		},
+		updateVolume(event) {
+			if (this.changingVolume) {
+				this.volume = event.target.value;
+				this.changeVolume();
+			}
+		},
+		stopVolumeChange() {
+			this.changingVolume = false;
+		},
 	},
 	computed: {
+		imageStyle() {
+    if (this.firstImageHeight === 0) {
+      return "";
+    }
+    return `height: ${this.firstImageHeight}px; object-fit: contain;`;
+  },
 		formattedCurrentTime() {
 			return this.formatTime(this.currentTime);
 		},
@@ -244,7 +309,7 @@ export default {
 		},
 	},
 	watch: {
-		playing() {
+			playing() {
 			if (this.playing) {
 				this.$refs.audio.ontimeupdate = () => {
 					this.currentTime = this.$refs.audio.currentTime;
@@ -275,15 +340,20 @@ export default {
 	border: 1px solid #1a242d;
 	box-shadow: 0px 3px 6px #999;
 }
+
+.no-select {
+	user-select: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+}
+
 .image {
 	top: 0;
 	left: 0;
 	right: 0;
 	bottom: 0;
 	margin: auto;
-	min-width: 500px;
-	max-width: 100%;
-	height: auto;
 }
 .time-wrapper {
 	margin-top: 0.5rem;
@@ -295,8 +365,8 @@ export default {
 	width: 100%;
 }
 
-.volumeButton{
-	transform:rotate(180deg);
+.volumeButton {
+	transform: rotate(180deg);
 	font-size: 26px;
 }
 .volume-wrapper {
