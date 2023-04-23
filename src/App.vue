@@ -124,13 +124,14 @@
     </div>
     <details class="transcript">
       <summary>Transcript</summary>
-      <div 
+      <div
         v-for="(subtitle, index) in subtitles"
         :key="index"
         class="transcript-entry"
+        :class="{ active: currentSubtitleIndex === index }"
       >
-        <span class="transcript-text">{{ subtitle.text }}</span>
-	</div>
+        <span class="transcript-text" v-html="subtitle.text"></span>
+      </div>
     </details>
   </div>
 </template>
@@ -162,36 +163,35 @@ export default {
     };
   },
   async mounted() {
-  await this.loadData(); // fetch JSON data
-  // preload images
-  this.segments.forEach((segment, index) => {
-    const img = new Image();
-    img.src = segment.image;
-    if (index === 0) {
-      img.onload = () => {
-        this.firstImageHeight = img.height;
+    await this.loadData(); // fetch JSON data
+    // preload images
+    this.segments.forEach((segment, index) => {
+      const img = new Image();
+      img.src = segment.image;
+      if (index === 0) {
+        img.onload = () => {
+          this.firstImageHeight = img.height;
 
-        // Add this part to check the image dimensions
-        const aspectRatio = img.width / img.height;
-        const windowWidth = window.innerWidth;
+          // Add this part to check the image dimensions
+          const aspectRatio = img.width / img.height;
+          const windowWidth = window.innerWidth;
 
-        if (img.width < windowWidth) {
-          this.$refs.imageContainer.style.width = img.width + "px";
-          this.$refs.imageContainer.style.height =
-            img.width / aspectRatio + "px";
-        } else {
-          this.$refs.imageContainer.style.width = windowWidth + "px";
-          this.$refs.imageContainer.style.height =
-            windowWidth / aspectRatio + "px";
-        }
-      };
-    }
-  });
-  this.currentImage = this.segments[0].image;
-  // add event listener to set duration when metadata is loaded
-  this.$refs.audio.addEventListener("loadedmetadata", this.audioLoaded);
-},
-
+          if (img.width < windowWidth) {
+            this.$refs.imageContainer.style.width = img.width + "px";
+            this.$refs.imageContainer.style.height =
+              img.width / aspectRatio + "px";
+          } else {
+            this.$refs.imageContainer.style.width = windowWidth + "px";
+            this.$refs.imageContainer.style.height =
+              windowWidth / aspectRatio + "px";
+          }
+        };
+      }
+    });
+    this.currentImage = this.segments[0].image;
+    // add event listener to set duration when metadata is loaded
+    this.$refs.audio.addEventListener("loadedmetadata", this.audioLoaded);
+  },
 
   methods: {
     async loadData() {
@@ -218,7 +218,7 @@ export default {
     rewind() {
       if (this.$refs.audio.currentTime < 5) {
         this.$refs.audio.currentTime = 0;
-		this.progress = 0;
+        this.progress = 0;
       } else {
         this.$refs.audio.currentTime -= 5;
       }
@@ -388,7 +388,7 @@ export default {
       if (this.firstImageHeight === 0) {
         return "";
       }
-    //   return `height: ${this.firstImageHeight}px; object-fit: contain;`;
+      //   return `height: ${this.firstImageHeight}px; object-fit: contain;`;
       return `height: 100%; object-fit: contain;`;
     },
     formattedCurrentTime() {
@@ -584,13 +584,18 @@ export default {
 }
 
 .transcript-entry {
-	display: inline;
+  display: inline;
   margin-bottom: 1rem;
   line-height: 1.5rem;
 }
 
-.transcript-entry:after{
-	content:" ";
+.transcript-entry.active {
+  background-color: rgba(128, 128, 128, 0.2);
+  outline: 1px solid rgba(128, 128, 128, 0.2);
+}
+
+.transcript-entry:after {
+  content: " ";
 }
 .transcript-entry:first-of-type {
   margin-top: 1rem;
