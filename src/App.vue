@@ -25,7 +25,10 @@
         role="slider"
         tabindex="0"
         aria-valuemin="0"
+		:aria-label="`Current time: ${formattedCurrentTime}`"
+		:title="`Current time: ${formattedCurrentTime}`"
         :aria-valuemax="Math.round(duration)"
+		:aria-valuenow="Math.round(currentTime)"
         :aria-valuetext="playing ? `` : `Current time: ${formattedCurrentTime}`"
         style="width: 100%; height: 15px; cursor: pointer"
         @click="seek"
@@ -105,7 +108,6 @@
         <div class="volume-wrapper">
           <label class="volumeButton" for="volume">&#128362;</label
           ><input
-            id="volume"
             class="volume-slider"
             :aria-label="$t('volumeControl')"
             type="range"
