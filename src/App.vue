@@ -15,7 +15,7 @@
           :style="imageStyle"
         />
         <div v-if="ccEnabled" class="captions-container">
-          <span class="caption">{{ displayedCaption }}</span>
+          <span class="caption" :style="{ color: currentCaptionColor }">{{ displayedCaption }}</span>
         </div>
       </div>
     </div>
@@ -406,6 +406,10 @@ export default {
     },
     displayedCaption() {
       return this.currentCaption ? this.currentCaption.text : "";
+    },
+    currentCaptionColor() {
+      const currentSegment = this.segments[this.currentSegmentIndex];
+      return currentSegment ? currentSegment.captionColor : "white";
     },
   },
   watch: {

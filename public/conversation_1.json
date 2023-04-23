@@ -6,31 +6,36 @@
 			"start": 0,
 			"end": 11,
 			"image": "./images/Dave.png",
-			"alt": "Dave standing up holding his phone looking angry."
+			"alt": "Dave standing up holding his phone looking angry.",
+			"captionColor": "#ffbbbb"
 		},
 		{
 			"start": 11,
 			"end": 20,
 			"image": "./images/Morgan_neutral.png",
-			"alt": "Morgan sitting at a table looking at their screen."
+			"alt": "Morgan sitting at a table looking at their screen.",
+			"captionColor": "yellow"
 		},
 		{
 			"start": 11,
 			"end": 30.5,
 			"image": "./images/Dave.png",
-			"alt": "Dave standing up holding his phone looking angry."
+			"alt": "Dave standing up holding his phone looking angry.",
+			"captionColor": "#ffbbbb"
 		},
 		{
 			"start": 30.5,
 			"end": 50,
 			"image": "./images/Morgan_neutral.png",
-			"alt": "Morgan sitting at a table looking at their screen."
+			"alt": "Morgan sitting at a table looking at their screen.",
+			"captionColor": "yellow"
 		},
 		{
 			"start": 50,
 			"end": 56,
 			"image": "./images/Dave.png",
-			"alt": "Dave standing up holding his phone looking angry."
+			"alt": "Dave standing up holding his phone looking angry.",
+			"captionColor": "#ffbbbb"
 		}
 	]
 }
