@@ -113,7 +113,7 @@
           CC
         </button>
         <div class="volume-wrapper">
-          <label class="volumeButton" for="volume">&#128362;</label
+          <label class="volumeButton" for="volume"><img :src="'./Buttons.svg#Speaker'" width="22" :alt="$t('volumeControl')" /></label
           ><input
             class="volume-slider"
             :aria-label="$t('volumeControl')"
