@@ -15,7 +15,9 @@
           :style="imageStyle"
         />
         <div v-if="ccEnabled" class="captions-container">
-          <span class="caption" :style="{ color: currentCaptionColor }">{{ displayedCaption }}</span>
+          <span class="caption" :style="{ color: currentCaptionColor }">{{
+            displayedCaption
+          }}</span>
         </div>
       </div>
     </div>
@@ -25,10 +27,10 @@
         role="slider"
         tabindex="0"
         aria-valuemin="0"
-		aria-label="Play progress bar"
-		title="Play progress bar"
+        aria-label="Play progress bar"
+        title="Play progress bar"
         :aria-valuemax="Math.round(duration)"
-		:aria-valuenow="playing ? `` : Math.round(currentTime)"
+        :aria-valuenow="playing ? `` : Math.round(currentTime)"
         :aria-valuetext="playing ? `` : `Current time: ${formattedCurrentTime}`"
         style="width: 100%; height: 15px; cursor: pointer"
         @click="seek"
@@ -67,7 +69,7 @@
             class="control-button rewind"
             :aria-label="$t('rewind')"
           >
-            &#10226;
+            <img :src="'./Buttons.svg#Rewind'" width="38" :alt="$t('rewind')" />
           </button>
           <button
             ref="playPauseBtn"
@@ -77,8 +79,13 @@
             :title="playing ? $t('pause') : $t('play')"
             :aria-label="playing ? $t('pause') : $t('play')"
             class="control-button play-pause"
-            v-html="playing ? '&#10073;&#10073;' : '&#9654;'"
-          ></button>
+          >
+            <img
+              :src="playing ? './Buttons.svg#Pause' : './Buttons.svg#Play'"
+              :alt="playing ? $t('pause') : $t('play')"
+              width="38"
+            />
+          </button>
 
           <button
             @click="forward"
@@ -86,7 +93,7 @@
             :aria-label="$t('forward')"
             class="control-button forward"
           >
-            &#10227;
+            <img :src="'./Buttons.svg#Forward'" width="38" :alt="$t('forward')" />
           </button>
         </div>
         <button
