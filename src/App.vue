@@ -479,8 +479,8 @@ export default {
 }
 
 .volumeButton {
-  transform: rotate(180deg);
-  font-size: 26px;
+  position: relative;
+  top:3px;
 }
 .volume-wrapper {
   display: flex;
@@ -494,7 +494,6 @@ export default {
 }
 .control-button {
   display: flex;
-  font-size: 36px;
   margin-right: 10px;
   border: none;
   background-color: transparent;
@@ -502,6 +501,11 @@ export default {
   color: white;
   margin-bottom: .5rem;
 }
+
+.control-button:hover {
+  box-shadow: (255,255,255,0.5);
+}
+
 .control-button:last-child {
   margin-right: 0;
 }
@@ -542,6 +546,10 @@ export default {
   background-color: #ffffff;
   cursor: pointer;
   border-radius: 50%;
+}
+
+.volume-slider:focus {
+  box-shadow: 0 0 0 5px rgba(255, 255, 255, 0.2);
 }
 
 .volume-slider::-moz-range-thumb {
