@@ -493,12 +493,14 @@ export default {
   align-items: center;
 }
 .control-button {
+  display: flex;
   font-size: 36px;
   margin-right: 10px;
   border: none;
   background-color: transparent;
   cursor: pointer;
   color: white;
+  margin-bottom: .5rem;
 }
 .control-button:last-child {
   margin-right: 0;
@@ -515,6 +517,10 @@ export default {
   transition: opacity 0.2s;
 }
 
+.volume-wrapper label{
+  margin-bottom:1rem;
+}
+
 .volume-slider {
   -webkit-appearance: none;
   appearance: none;
@@ -525,6 +531,7 @@ export default {
   outline: none;
   opacity: 0.7;
   transition: opacity 0.2s;
+  margin-bottom: 1rem;
 }
 
 .volume-slider::-webkit-slider-thumb {
