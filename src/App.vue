@@ -599,6 +599,7 @@ export default {
 }
 
 .transcript {
+  box-sizing: border-box;
   width: 100%;
   max-width: 500px;
   margin: 1rem auto;
