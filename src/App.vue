@@ -478,10 +478,6 @@ export default {
   width: 100%;
 }
 
-.volumeButton {
-  position: relative;
-  top:3px;
-}
 .volume-wrapper {
   display: flex;
   align-items: center;
