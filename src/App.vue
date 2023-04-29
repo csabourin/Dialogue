@@ -443,6 +443,7 @@ export default {
 
 <style>
 .audioPlayer {
+  box-sizing: border-box;
   color: white;
   min-width: 300px;
   max-width: 500px;
