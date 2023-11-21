@@ -1,47 +1,47 @@
 ﻿{
-	"audioSrc": "./Audio/DDN237_3.4.1_POV_Activity.mp3",
-	"subtitleSrc": "./Audio/ddn237_341_pov_activity.vtt",
+	"audioSrc": "./Audio/DDN237-2-FR.mp3",
+	"subtitleSrc": "./Audio/DDN237_pov_2_fr.xml",
 	"segments": [
 		{
 			"start": 0,
 			"end": 7.5,
 			"image": "images/Claudine_1.png",
-			"alt": "Claudine entering Morgan's office",
+			"alt": "Claudine entre dans le bureau de Morgan",
 			"captionColor": "lightgreen"
 		},
 		{
 			"start": 7.5,
 			"end": 25.5,
 			"image": "images/Morgan_sad.png",
-			"alt": "Morgan is sad",
+			"alt": "Morgan est triste",
 			"captionColor": "yellow"
 		},
 		{
 			"start": 25.5,
 			"end": 34,
 			"image": "images/Claudine_2.png",
-			"alt": "Claudine entering Morgan's office",
+			"alt": "Claudine entre dans le bureau de Morgan",
 			"captionColor": "lightgreen"
 		},
 		{
 			"start": 34,
-			"end": 48,
+			"end": 51.5,
 			"image": "images/Morgan_sad.png",
-			"alt": "Morgan is sad",
+			"alt": "Morgan est triste",
 			"captionColor": "yellow"
 		},
 		{
-			"start": 48,
-			"end": 66,
+			"start": 51.5,
+			"end": 67,
 			"image": "images/Claudine_2.png",
-			"alt": "Claudine entering Morgan's office",
+			"alt": "Claudine entre dans le bureau de Morgan",
 			"captionColor": "lightgreen"
 		},
 		{
-			"start": 66,
+			"start": 67,
 			"end": 84,
 			"image": "images/Morgan_neutral.png",
-			"alt": "Morgan is neutral",
+			"alt": "Morgan a une expression neutre",
 			"captionColor": "yellow"
 		}
 	]

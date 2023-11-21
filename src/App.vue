@@ -2,18 +2,10 @@
   <div style="font-family: sans-serif">
     <div style="width: 100%; display: flex; justify-content: center">
       <div class="speech-bubble" ref="imageContainer" style="">
-        <img
-          ref="image"
-          :key="currentImage"
-          :src="currentImage"
-          :alt="
-            segments.length > 0
-              ? `Image illustrating the current audio segment: ${segments[currentSegmentIndex].alt}`
-              : ``
-          "
-          class="image"
-          :style="imageStyle"
-        />
+        <img ref="image" :key="currentImage" :src="currentImage" :alt="segments.length > 0
+          ? `${segments[currentSegmentIndex].alt}`
+          : ``
+          " class="image" :style="imageStyle" />
         <div v-if="ccEnabled" class="captions-container">
           <span class="caption" :style="{ color: currentCaptionColor }">{{
             displayedCaption
@@ -22,38 +14,20 @@
       </div>
     </div>
     <div v-if="audioSrc" class="audioPlayer no-select">
-      <div
-        ref="progressBar"
-        role="slider"
-        tabindex="0"
-        aria-valuemin="0"
-        aria-label="Play progress bar"
-        title="Play progress bar"
-        :aria-valuemax="Math.round(duration)"
+      <div ref="progressBar" role="slider" tabindex="0" aria-valuemin="0" aria-label="Play progress bar"
+        title="Play progress bar" :aria-valuemax="Math.round(duration)"
         :aria-valuenow="playing ? `` : Math.round(currentTime)"
         :aria-valuetext="playing ? `` : `Current time: ${formattedCurrentTime}`"
-        style="width: 100%; height: 15px; cursor: pointer"
-        @click="seek"
-        @mousedown="startSeek"
-        @mousemove="updateSeek"
-        @mouseup="stopSeek"
-        @keydown.space.prevent="playPause"
-        @keydown.left.prevent="seekByKeyboard(-5)"
-        @keydown.right.prevent="seekByKeyboard(5)"
-      >
-        <div
-          :style="{
-            width: progress + '%',
-            height: '100%',
-            backgroundColor: '#889',
-          }"
-        ></div>
+        style="width: 100%; height: 15px; cursor: pointer" @click="seek" @mousedown="startSeek" @mousemove="updateSeek"
+        @mouseup="stopSeek" @keydown.space.prevent="playPause" @keydown.left.prevent="seekByKeyboard(-5)"
+        @keydown.right.prevent="seekByKeyboard(5)">
+        <div :style="{
+          width: progress + '%',
+          height: '100%',
+          backgroundColor: '#889',
+        }"></div>
       </div>
-      <div
-        class="time-wrapper"
-        aria-live="off"
-        style="display: flex; justify-content: space-between"
-      >
+      <div class="time-wrapper" aria-live="off" style="display: flex; justify-content: space-between">
         <span>{{ formattedCurrentTime }} / {{ formattedDuration }}</span>
       </div>
       <audio ref="audio" @timeupdate="updateImage" @ended="reset">
@@ -63,84 +37,47 @@
         <div style="flex-grow: 0.5"></div>
 
         <div class="buttons-wrapper">
-          <button
-            @click="rewind"
-            :title="$t('rewind')"
-            class="control-button rewind"
-            :aria-label="$t('rewind')"
-          >
+          <button @click="rewind" :title="$t('rewind')" class="control-button rewind" :aria-label="$t('rewind')">
             <img :src="'./Buttons.svg#Rewind'" width="38" :alt="$t('rewind')" />
           </button>
-          <button
-            ref="playPauseBtn"
-            @click="playPause"
-            @keydown.space.prevent="playPause"
-            tabindex="0"
-            :title="playing ? $t('pause') : $t('play')"
-            :aria-label="playing ? $t('pause') : $t('play')"
-            class="control-button play-pause"
-          >
-            <img
-              :src="playing ? './Buttons.svg#Pause' : './Buttons.svg#Play'"
-              :alt="playing ? $t('pause') : $t('play')"
-              width="38"
-            />
+          <button ref="playPauseBtn" @click="playPause" @keydown.space.prevent="playPause" tabindex="0"
+            :title="playing ? $t('pause') : $t('play')" :aria-label="playing ? $t('pause') : $t('play')"
+            class="control-button play-pause">
+            <img :src="playing ? './Buttons.svg#Pause' : './Buttons.svg#Play'" :alt="playing ? $t('pause') : $t('play')"
+              width="38" />
           </button>
 
-          <button
-            @click="forward"
-            :title="$t('forward')"
-            :aria-label="$t('forward')"
-            class="control-button forward"
-          >
+          <button @click="forward" :title="$t('forward')" :aria-label="$t('forward')" class="control-button forward">
             <img :src="'./Buttons.svg#Forward'" width="38" :alt="$t('forward')" />
           </button>
         </div>
-        <button
-          @click="toggleCC"
-          :title="ccEnabled ? this.$t('turnCCOff') : this.$t('turnCCOn')"
-          :aria-label="
-            ccEnabled
-              ? this.$t('turnClosedCaptionsOff')
-              : this.$t('turnClosedCaptionsOn')
-          "
-          :class="[
-            'control-button',
-            'cc-toggle',
-            { 'cc-toggle--active': ccEnabled },
-          ]"
-        >
+        <button @click="toggleCC" :title="ccEnabled ? this.$t('turnCCOff') : this.$t('turnCCOn')" :aria-label="ccEnabled
+          ? this.$t('turnClosedCaptionsOff')
+          : this.$t('turnClosedCaptionsOn')
+          " :class="[
+    'control-button',
+    'cc-toggle',
+    { 'cc-toggle--active': ccEnabled },
+  ]">
           CC
         </button>
         <div class="volume-wrapper">
-          <label class="volumeButton" for="volume"><img :src="'./Buttons.svg#Speaker'" width="22" :alt="$t('volumeControl')" /></label
-          ><input
-            class="volume-slider"
-            :aria-label="$t('volumeControl')"
-            type="range"
-            min="0"
-            max="100"
-            v-model="volume"
-            @change="changeVolume"
-            @mousedown="startVolumeChange"
-            @mousemove="updateVolume"
-            @mouseout="stopVolumeChange"
-            @mouseup="stopVolumeChange"
-            tabindex="0"
-          />
+          <img :src="'./Buttons.svg#Speaker'" width="22"
+              :alt="$t('volumeControl')" /><input class="volume-slider" :aria-label="$t('volumeControl')"
+            type="range" min="0" max="100" v-model="volume" @change="changeVolume" @mousedown="startVolumeChange"
+            @mousemove="updateVolume" @mouseout="stopVolumeChange" @mouseup="stopVolumeChange" tabindex="0" />
         </div>
       </div>
     </div>
     <details class="transcript">
       <summary>Transcript</summary>
-      <div
-        v-for="(subtitle, index) in subtitles"
-        :key="index"
-        class="transcript-entry"
-        :class="{ active: currentSubtitleIndex === index }"
-      >
-        <span class="transcript-text" v-html="subtitle.text"></span>
+      <div v-for="(group, groupIndex) in groupedTranscripts" :key="groupIndex" class="transcript-group">
+        <strong>{{ group.speaker }}:</strong>
+        <div v-for="(segment, segmentIndex) in group.segments" :key="segmentIndex" class="transcript-entry" :class="{ 'active': isSegmentActive(segment) }">
+          <span class="transcript-text" >{{ segment.text }}</span>
+        </div>
       </div>
+
     </details>
   </div>
 </template>
@@ -205,22 +142,26 @@ export default {
   methods: {
     async loadData() {
       try {
-        const response = await fetch(this.datasource); // fetch JSON file from datasource (injected in main.js)
+        // Fetch JSON data
+        const response = await fetch(this.datasource);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
+
+        // Set audio source and segments
         this.audioSrc = data.audioSrc;
         this.segments = data.segments;
 
-        const vttResponse = await fetch(data.subtitleSrc);
-        if (!vttResponse.ok) {
-          throw new Error(`HTTP error! status: ${vttResponse.status}`);
+        // Fetch and parse TTML data
+        const ttmlResponse = await fetch(data.subtitleSrc);
+        if (!ttmlResponse.ok) {
+          throw new Error(`HTTP error! status: ${ttmlResponse.status}`);
         }
-        const vttData = await vttResponse.text();
-        this.subtitles = this.parseVTT(vttData);
+        const ttmlData = await ttmlResponse.text();
+        this.subtitles = this.parseTTML(ttmlData);
       } catch (error) {
-        console.error("Error fetching JSON data:", error);
+        console.error("Error fetching data:", error);
       }
     },
 
@@ -294,6 +235,7 @@ export default {
     },
     updateProgress() {
       const currentTime = this.$refs.audio.currentTime;
+      console.log(currentTime);
       const duration = this.$refs.audio.duration;
       if (duration && currentTime) {
         this.progress = (currentTime / duration) * 100;
@@ -372,8 +314,8 @@ export default {
       let match;
 
       while ((match = regex.exec(vtt)) !== null) {
-        const startTime = this.timeStringToSeconds(match[1]);
-        const endTime = this.timeStringToSeconds(match[2]);
+        const startTime = match[1];
+        const endTime = match[2];
         const text = match[3].replace(/<[^>]+>/g, ""); // Remove VTT tags from the text
         subtitles.push({ startTime, endTime, text });
       }
@@ -381,7 +323,57 @@ export default {
       return subtitles;
     },
 
+    parseTTML(ttml) {
+      const parser = new DOMParser();
+      const xmlDoc = parser.parseFromString(ttml, "text/xml");
+      const elements = xmlDoc.getElementsByTagName("p");
+      const subtitles = Array.from(elements).map(element => {
+        const start = element.getAttribute("begin");
+        const end = element.getAttribute("end");
+        const speaker = element.getAttribute("data-speaker"); // Extract the speaker attribute
+        const text = element.textContent.trim();
+
+        return {
+          startTime: this.timeStringToSeconds(start),
+          endTime: this.timeStringToSeconds(end),
+          speaker, // Include the speaker in the object
+          text
+        };
+      });
+
+      return subtitles;
+    },
+    groupSubtitlesBySpeaker(subtitles) {
+      const groupedSubtitles = [];
+      let currentGroup = null;
+
+      subtitles.forEach(subtitle => {
+        if (!currentGroup || currentGroup.speaker !== subtitle.speaker) {
+          if (currentGroup) {
+            groupedSubtitles.push(currentGroup);
+          }
+          currentGroup = {
+            speaker: subtitle.speaker,
+            segments: [subtitle]
+          };
+        } else {
+          currentGroup.segments.push(subtitle);
+        }
+      });
+
+      if (currentGroup) {
+        groupedSubtitles.push(currentGroup);
+      }
+
+      return groupedSubtitles;
+    },
+
+
     timeStringToSeconds(timeString) {
+      if (typeof timeString !== 'string') {
+        console.error('Invalid time string:', timeString);
+        return 0;
+      }
       const [hours, minutes, seconds] = timeString.split(":");
       const [secondsPart, milliseconds] = seconds.split(/[,.]/);
       return (
@@ -391,8 +383,21 @@ export default {
         parseInt(milliseconds) / 1000
       );
     },
+
+
+    isSegmentActive(segment) {
+      const currentTime = parseFloat(this.$refs.audio.currentTime);
+      const startTime = parseFloat(segment.startTime);
+      const endTime = parseFloat(segment.endTime);
+      return currentTime >= startTime && currentTime < endTime;
+    },
+
   },
+
   computed: {
+    groupedTranscripts() {
+      return this.groupSubtitlesBySpeaker(this.subtitles);
+    },
     imageStyle() {
       if (this.firstImageHeight === 0) {
         return "";
@@ -441,7 +446,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .audioPlayer {
   box-sizing: border-box;
   color: white;
@@ -469,14 +474,17 @@ export default {
   bottom: 0;
   margin: auto;
 }
+
 .time-wrapper {
   margin-top: 0.5rem;
 }
+
 .control-buttons {
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
+  padding: 0;
 }
 
 .volume-wrapper {
@@ -489,6 +497,7 @@ export default {
   justify-content: center;
   align-items: center;
 }
+
 .control-button {
   display: flex;
   margin-right: 10px;
@@ -499,13 +508,18 @@ export default {
   margin-bottom: .5rem;
 }
 
+.control-buttons button {
+  padding: revert;
+}
+
 .control-button:hover {
-  box-shadow: (255,255,255,0.5);
+  box-shadow: (255, 255, 255, 0.5);
 }
 
 .control-button:last-child {
   margin-right: 0;
 }
+
 [role="slider"] {
   -webkit-appearance: none;
   appearance: none;
@@ -518,8 +532,8 @@ export default {
   transition: opacity 0.2s;
 }
 
-.volume-wrapper label{
-  margin-bottom:1rem;
+.volume-wrapper label {
+  margin-bottom: 1.25rem;
 }
 
 .volume-slider {
@@ -564,6 +578,7 @@ export default {
   border-radius: 10px;
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.5);
 }
+
 .captions-container {
   position: absolute;
   bottom: 0;
@@ -580,13 +595,14 @@ export default {
   border: 1px solid white;
   border-radius: 5px;
   cursor: pointer;
-  font-size: small;
+  font-size: 10px;
 }
 
 .cc-toggle--active {
   background-color: white;
   color: black;
 }
+
 .caption {
   font-size: 16px;
   color: white;
@@ -616,13 +632,16 @@ export default {
 }
 
 .transcript-entry.active {
-  background-color: rgba(128, 128, 128, 0.2);
-  outline: 1px solid rgba(128, 128, 128, 0.2);
+  background-color: rgba(128, 128, 128, 0.5);
+  outline: 1px solid rgba(128, 128, 128, 0.5);
 }
+
+
 
 .transcript-entry:after {
   content: " ";
 }
+
 .transcript-entry:first-of-type {
   margin-top: 1rem;
 }

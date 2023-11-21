@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<tt xmlns="http://www.w3.org/ns/ttml">
+  <body>
+    <div>
+      <p begin="00:00:00.001" end="00:00:04.278" data-speaker="Martin">
+        J’ai envoyé le formulaire de demande il y a plusieurs semaines sur votre site Web
+      </p>
+      <p begin="00:00:04.278" end="00:00:08.557"  data-speaker="Martin">
+        TRÈS compliqué et je n’ai eu aucune nouvelle. Je veux embaucher des entrepreneurs avant la
+      </p>
+      <p begin="00:00:08.557" end="00:00:12.835" data-speaker="Martin">
+        fin de l’été pour faire construire mon quai. Qu'est-ce qui se passe avec ma demande?
+      </p>
+      <p begin="00:00:12.835" end="00:00:18.655" data-speaker="Morgan">
+        Monsieur, je vous demande de m’excuser. On cherche votre demande, car c’est possible qu’elle n’ait pas
+      </p>
+      <p begin="00:00:18.655" end="00:00:24.475" data-speaker="Morgan">
+        été transmise à la bonne personne. Merci de votre patience pendant que je continue mes recherches.
+      </p>
+      <p begin="00:00:24.475" end="00:00:29.986" data-speaker="Martin">
+        Je ne sais même pas si j’ai BESOIN d’un examen réglementaire ou non. J’ai juste fait les démarches pour
+      </p>
+      <p begin="00:00:29.986" end="00:00:35.496" data-speaker="Martin">
+        éviter d’avoir des problèmes. Qu’est-ce qui arrive si je saute cette étape et que je continue mon projet?
+      </p>
+      <p begin="00:00:35.496" end="00:00:41.316" data-speaker="Morgan">
+        Je suis désolée, seul un biologiste peut évaluer votre demande et vous dire si vous avez besoin d’un
+      </p>
+      <p begin="00:00:41.316" end="00:00:47.136" data-speaker="Morgan">
+        examen, mais j’ai transmis votre demande à un niveau supérieur et la personne responsable de votre demande va
+      </p>
+      <p begin="00:00:47.136" end="00:00:52.956" data-speaker="Morgan">
+        vous appeler dans les dix jours ouvrables pour vous donner une réponse. Si vous continuez votre projet avant
+      </p>
+      <p begin="00:00:52.956" end="00:00:58.776" data-speaker="Morgan">
+        qu’on ait évalué votre demande, vous pourriez recevoir une amende et causer des dommages à l’habitat des poissons.
+      </p>
+      <p begin="00:00:58.776" end="00:01:02.829" data-speaker="Martin">
+        Je dois attendre encore deux semaines! Incroyable!
+      </p>
+    </div>
+  </body>
+</tt>

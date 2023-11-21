@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<tt xmlns="http://www.w3.org/ns/ttml">
+  <body>
+    <div>
+      <p begin="00:00:00.000" end="00:00:07.253" data-speaker="Claudine">
+        Morgan, as-tu terminé le brouillon? Ouf, qu’est-ce qui se passe? T’as l’air stressée!
+      </p>
+      <p begin="00:00:07.253" end="00:00:13.645" data-speaker="Morgan">
+        Désolée, j’ai l’impression que chaque semaine, cet été, je reçois sans cesse des appels de gens qui essaient d’obtenir des
+      </p>
+      <p begin="00:00:13.645" end="00:00:20.037" data-speaker="Morgan">
+        infos sur leur demande d’examen réglementaire, et comme les données ne sont pas bien codées parce que les gens envoient
+      </p>
+      <p begin="00:00:20.037" end="00:00:26.429" data-speaker="Morgan">
+        toujours les mauvais formulaires pour leur projet, je suis obligée de tout chercher manuellement. Ça devient vraiment fatigant!
+      </p>
+      <p begin="00:00:26.501" end="00:00:30.847" data-speaker="Claudine">
+        D’accord, mais la vraie priorité, c’est ce document de consultation. C’est la
+      </p>
+      <p begin="00:00:30.847" end="00:00:35.194" data-speaker="Claudine">
+        fin de l’année financière et on a une date limite fixe...
+      </p>
+      <p begin="00:00:35.194" end="00:00:39.496" data-speaker="Morgan">
+        Je le sais bien, mais la seule façon de faire en sorte que les gens arrêtent de
+      </p>
+      <p begin="00:00:39.496" end="00:00:43.798" data-speaker="Morgan">
+        m’appeler, c’est d’essayer de leur donner une réponse sur leurs demandes, mais j’ai du mal à le
+      </p>
+      <p begin="00:00:43.798" end="00:00:48.100" data-speaker="Morgan">
+        faire parce que personne n’a le temps de les trier. J’ai l’impression que c’est un boulot à
+      </p>
+      <p begin="00:00:48.100" end="00:00:52.402" data-speaker="Morgan">
+        temps plein de gérer ces demandes, et la plupart ne sont même pas nécessaires.
+      </p>
+      <p begin="00:00:52.402" end="00:00:57.432" data-speaker="Claudine">
+        On devrait rediriger les gens vers le site Web pour qu’ils lisent les documents, tout le processus
+      </p>
+      <p begin="00:00:57.432" end="00:01:02.461" data-speaker="Claudine">
+        et les cadres réglementaires y sont expliqués. Si on ne livre pas ce document bientôt, je vais
+      </p>
+      <p begin="00:01:02.461" end="00:01:07.490" data-speaker="Claudine">
+        devoir signaler qu’on va manquer la date limite, et ça n’annonce rien de bon pour nous.
+      </p>
+      <p begin="00:01:07.490" end="00:01:13.978" data-speaker="Morgan">
+        Disons-le, la navigation et la fonction de recherche sur le site ne sont pas super. Les gens ont aussi besoin
+      </p>
+      <p begin="00:01:13.978" end="00:01:20.466" data-speaker="Morgan">
+        d’aide pour comprendre certains termes techniques, ce n’est vraiment pas facile à comprendre. Je n’ai pas le temps de guider
+      </p>
+      <p begin="00:01:20.466" end="00:01:26.954" data-speaker="Morgan">
+        les gens dans tout le processus et d’écrire ce brouillon de document de consultation. Je ne sais pas quoi faire!
+      </p>
+    </div>
+  </body>
+</tt>

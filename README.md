@@ -1,86 +1,83 @@
-# Dialogue
-## Custom Audio Player with Synchronized Images
+# README.md for Custom Audio Player with JSON Configuration
 
-This is a custom audio player that synchronizes images with specific time segments of the audio file. The images will change as the audio plays, providing a visual representation of the current segment of the audio. The player also provides standard audio controls such as play/pause, rewind, fast-forward, and volume control.
+## Overview
+
+This Vue.js component is a custom audio player enhanced with features like image synchronization, closed captions (CC), playback controls, and dynamic transcripts. The configuration of the audio player, including audio source, subtitles, and segments, is managed via a JSON file.
 
 ## Features
 
-- Synchronized images with audio segments
-- Play/pause button
-- Rewind and fast-forward buttons
-- Volume control
-- Time indicator (current time and duration)
-- Clickable progress bar for seeking
-- Keyboard controls for seeking and play/pause
+- **Synchronized Images**: Displays images in sync with specific audio segments.
+- **Closed Captions**: Offers CC functionality with the ability to toggle on and off.
+- **Playback Controls**: Includes play/pause, rewind, forward, and volume control.
+- **Dynamic Transcripts**: Displays transcripts with active segment highlighting.
+- **Responsive Design**: Adapts to different screen sizes.
+- **Accessibility**: Accessible controls with ARIA labels and roles.
 
-## Getting Started
+## Installation
 
-1. Include the Vue.js library in your HTML file.
-2. Add the custom audio player component to your HTML file.
-3. Import the component in your JavaScript file.
-4. Inject the data source in your main.js file.
-5. Add the required CSS styles.
+1. **Clone the Repository**: Clone or download this repository to your local machine.
+2. **Install Dependencies**: Run `npm install` to install necessary dependencies.
+3. **Integration**: Include this component in your Vue.js project.
 
 ## Usage
 
-To use this custom audio player, first import the component in your Vue.js project. Then, pass a JSON file containing the audio source and an array of segments as a prop to the component. Each segment should include a start time, end time, image URL, and alt text.
+### Template
 
-Example of JSON data:
+Add the provided template into your Vue.js project, maintaining the structure and class names for functionality.
+
+### Script
+
+- Import the component into your Vue.js application.
+- Add the script part of the component in your components directory.
+- Customize data properties as required for your application.
+
+### Styling
+
+- Apply custom CSS to match your design requirements.
+- Ensure CSS selectors match those in the template for consistency.
+
+## Configuration
+
+The component is configured using a JSON file. Here is an example structure:
 
 ```json
 {
-  "audioSrc": "path/to/your/audio/file.mp3",
+  "audioSrc": "./Audio/DDN237_pov_1_fr.mp3",
+  "subtitleSrc": "./Audio/DDN237_pov_1_fr.xml",
   "segments": [
     {
       "start": 0,
-      "end": 5,
-      "image": "path/to/your/image1.jpg",
-      "alt": "Description of image1"
+      "end": 12.835,
+      "image": "./images/Dave.png",
+      "alt": "Description of the first image.",
+      "captionColor": "#ffbbbb"
     },
-    {
-      "start": 5,
-      "end": 10,
-      "image": "path/to/your/image2.jpg",
-      "alt": "Description of image2"
-    }
+    // Additional segments...
   ]
 }
 ```
 
-## Customization
+### Fields
 
-You can easily customize the appearance of the audio player by modifying the CSS styles in the `<style>` section of the component.
+- **audioSrc**: Path to the audio file.
+- **subtitleSrc**: Path to the subtitle file.
+- **segments**: Array of objects representing each segment with the following fields:
+  - **start**: Start time of the segment in seconds.
+  - **end**: End time of the segment in seconds.
+  - **image**: Path to the image file.
+  - **alt**: Alt text for the image.
+  - **captionColor**: Color code for the caption text.
 
-## Accessibility
+### Customization
 
-The audio player includes accessibility features such as ARIA roles, labels, and keyboard controls. The player supports keyboard controls for seeking, play/pause, and volume control.
+- Modify the `audioSrc` and `subtitleSrc` paths according to your file structure.
+- Update the `segments` array based on your audio and image synchronization needs.
 
-## Browser Support
+## Limitations
 
-This custom audio player should work on modern browsers that support the HTML5 `<audio>` element, including Chrome, Firefox, Safari, and Edge.
+- **Browser Compatibility**: Test across different browsers for full compatibility.
+- **Responsive Design**: Additional adjustments might be needed for extreme screen sizes.
 
-## Recommended IDE Setup
+## Contributing
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vitejs.dev/config/).
-
-## Project Setup
-
-```sh
-npm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
-npm run dev
-```
-
-### Compile and Minify for Production
-
-```sh
-npm run build
-```
+Contributions are welcome to enhance this component. Please follow the standard GitHub process - fork, make changes, and submit a pull request for review.

@@ -1,40 +1,40 @@
 ﻿{
-	"audioSrc": "./Audio/DDN237_3.4_POV_Activity.mp3",
-	"subtitleSrc": "./Audio/ddn237_34_pov_activity.vtt",
+	"audioSrc": "./Audio/DDN237_pov_1_fr.mp3",
+	"subtitleSrc": "./Audio/DDN237_pov_1_fr.xml",
 	"segments": [
 		{
 			"start": 0,
-			"end": 11,
+			"end": 12.835,
 			"image": "./images/Dave.png",
-			"alt": "Dave standing up holding his phone looking angry.",
+			"alt": "Martin est debout avec son téléphone en mains. Il semble fâché.",
 			"captionColor": "#ffbbbb"
 		},
 		{
-			"start": 11,
-			"end": 20,
+			"start": 12.835,
+			"end": 24.475,
 			"image": "./images/Morgan_neutral.png",
-			"alt": "Morgan sitting at a table looking at their screen.",
+			"alt": "Morgan est assise à son bureau et regarde l'écran.",
 			"captionColor": "yellow"
 		},
 		{
-			"start": 11,
-			"end": 30.5,
+			"start": 24.475,
+			"end": 35.496,
 			"image": "./images/Dave.png",
-			"alt": "Dave standing up holding his phone looking angry.",
+			"alt": "Martin est debout avec son téléphone en mains. Il semble fâché.",
 			"captionColor": "#ffbbbb"
 		},
 		{
-			"start": 30.5,
-			"end": 50,
+			"start": 35.496,
+			"end": 58.776,
 			"image": "./images/Morgan_neutral.png",
-			"alt": "Morgan sitting at a table looking at their screen.",
+			"alt": "Morgan est assise à son bureau et regarde l'écran.",
 			"captionColor": "yellow"
 		},
 		{
-			"start": 50,
-			"end": 56,
+			"start": 58.776,
+			"end": 106,
 			"image": "./images/Dave.png",
-			"alt": "Dave standing up holding his phone looking angry.",
+			"alt": "Martin est debout avec son téléphone en mains. Il semble fâché.",
 			"captionColor": "#ffbbbb"
 		}
 	]
